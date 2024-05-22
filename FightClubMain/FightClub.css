@@ -1,0 +1,131 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    --myBrown: #a58470; /* Define a global CSS variable */
+    --myGrey: #88908f;
+    --mySalmon: #d85d60;
+    --myDarkBrown: #473423;
+  }
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.row{
+    flex-direction: row;
+}
+body{
+    background-color: var(--myBrown);
+    height: 110vh;
+}
+header{
+    font-family: "Poetsen One", sans-serif;
+    height: 100px;
+    width: 1000px;
+    font-size: 50px;
+    color: var(--myDarkBrown);
+}
+#mainContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+canvas{
+    margin: 0;
+    width: 1000px;
+    height: 500px;
+    border: 2px solid var(--myGrey);
+    background-color: beige;
+    background-image: url('bilder/fightBackground.jpg');
+    background-size: cover; /* Adjust as needed */
+}
+button{
+    width: 100px;
+    height: 50px;
+}
+
+/* Topscreen Info */
+#topStats{
+    width: 1000px;
+    height: 100px;
+    background-color: wheat;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px;
+}
+#timer{
+    border: 2px solid var(--myGrey);
+    background-color: var(--myDarkBrown);
+    color: var(--myGrey);
+    font-size: 30px;
+}
+/*Player info*/
+.life{
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    border: 2px solid black;
+    margin: 0 10px;
+    background-color: white;
+    
+}
+/*Player 1*/
+#player1{
+    border: 2px solid var(--myGrey);
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+    grid-template-columns: 1fr;
+    background-color: rgb(0, 64, 255);
+    color: white;
+}
+#player1Health{
+    grid-row: 1/2;
+    grid-column: 1/2;
+    font-size: 40px;
+}
+#player1Lives{
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+/*Player 2*/
+#player2{
+    border: 2px solid var(--myGrey);
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+    grid-template-columns: 1fr;
+    background-color: red;
+    color: white;
+}
+#player2Health{
+    grid-row: 1/2;
+    grid-column: 1/2;
+    font-size: 40px;
+}
+#player2Lives{
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+.attackReady{
+    width: 150px;
+    height: 75px;
+    border: 2px solid var(--myGrey);
+    margin: 0px;
+    background-color: green;
+}
+#player1Ultimate{
+    background-color: red;
+}
+#player2Ultimate{
+    background-color: red;
+}
+#divider{
+    width: 100px;
+    height: 75px;
+    background-color: var(--myGrey);
+}
+

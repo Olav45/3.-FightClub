@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FightClubtest</title>
+    <link rel="stylesheet" href="FightClubtest.css">
+
+</head>
+
+<body>
+    <div id="mainContainer">
+        <div id="topStats">
+            <div id="player1">
+                <div id="player1Health" class="flex">100%</div>
+                <div id="player1Lives" class="flex">
+                    <div id="player1Life3" class="life"></div>
+                    <div id="player1Life2" class="life"></div>
+                    <div id="player1Life1" class="life"></div>
+                </div>
+            </div>
+            <div id="timer" class="flex">
+                <p id="tid">
+                    <span id="minute">00</span>
+                    :
+                    <span id="second">00</span>
+                </p>
+            </div>
+            <div id="player2">
+                <div id="player2Health" class="flex">100%</div>
+                <div id="player2Lives" class="flex">
+                    <div id="player2Life3" class="life"></div>
+                    <div id="player2Life2" class="life"></div>
+                    <div id="player2Life1" class="life"></div>
+                </div>
+            </div>
+        </div>
+        <canvas></canvas>
+        <div id="buttonSelect" class="flex">
+            <div>
+                <button id="allRound">AllRound</button>
+                <button id="tank">Tank</button>
+                <button id="archer">Archer</button>
+            </div>
+            <div>
+                <button id="allRound2">AllRound2</button>
+                <button id="tank2">Tank2</button>
+                <button id="archer2">Archer2</button>
+            </div>
+        </div>
+
+    </div>
+    <script src="FightClubtest.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="characterSelect.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="flex">
+        <div class="flex direction">
+            <header>
+                <div class="container" id="overskriftPlacement">
+                    <p id="overskrift" class="flex">FightClub</p>
+                </div>
+                <div class="container" id="howToPlacement">
+                    <div id="howTo" class="flex">How To Play?</div>
+                </div>
+            </header>
+            <div id="instructions" class="flex center">
+                <p id="explain">Player 1´s turn to select. Select by pressing on your desired character´s Icon!</p>
+            </div>
+            <main>
+                <div class="tarzan characterPicture flex" id="tarzanSelect"><img src="bilder/tarzanFace3.png"></div>
+                <div class="tarzan characterDescription flex">
+                    <p>Tarzan is an all around good character with good stats across the board. While Tarzan may not be
+                        the best in any individual stat he also wont be the worst in any stat either. Tarzan should be
+                        treated as an all arond jack of all trades character. Tarzan has also made appearances in the
+                        games "Tarzan jump" and "Realm of Riches" </p>
+                </div>
+                <div class="tarzan characterAttacks flex">
+                    <div class="eAttack flex">
+                        <p><span class="e">[E]</span> Whip:</p>
+                        <p>A close range whip attack with Decent damage</p>
+                    </div>
+                    <div class="rAttack flex">
+                        <p><span class="r">[R]</span> Coconut Throw:</p>
+                        <p>Tarzan throws a coconut which deals damage on contact</p>
+                    </div>
+                    <div class="fAttack flex">
+                        <p><span class="f">[F]</span> Jungle Punch:</p>
+                        <p>A close range punch with High damage</p>
+                    </div>
+                </div>
+                <div class="tarzan characterStats flex">
+                    <div class="statsContainer">
+                        <div class="health flex">
+                            <div>Health:</div>
+                            <div class="characterStatBar">
+                                <div id="tarzanHealthStat"></div>
+                            </div>
+                        </div>
+                        <div class="attack flex">
+                            <div>Attack:</div>
+                            <div class="characterStatBar">
+                                <div id="tarzanAttackStat"></div>
+                            </div>
+                        </div>
+                        <div class="movement flex">
+                            <div>Movement:</div>
+                            <div class="characterStatBar">
+                                <div id="tarzanMovementStat"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="donkeykong characterPicture flex" id="donkeykongSelect"><img src="bilder/donkekongFace.png">
+                </div>
+                <div class="donkeykong characterDescription flex">
+                    <p>Donkeykong is a tank. What donkeykong lacks in mobility he more than makes up for with his health
+                        and sheer power. Donkeykong will be able to take a lot of hits, but he might struggle landing
+                        his own due to his lack of mobility, but if you do succeed in landing hits on your opponent you
+                        will quickly be able to wittle down their health. Donkekong also makes appearences in the Mario
+                        franchise.</p>
+                </div>
+                <div class="donkeykong characterAttacks flex">
+                    <div class="eAttack flex">
+                        <p><span class="e">[E]</span> Punch:</p>
+                        <p>A close range slow punch attack with high damage</p>
+                    </div>
+                    <div class="rAttack flex">
+                        <p><span class="r">[R]</span> Rock Lob:</p>
+                        <p>Donkeykong lobs a rock that deals damage to enemies</p>
+                    </div>
+                    <div class="fAttack flex">
+                        <p><span class="f">[F]</span> Smash Punch:</p>
+                        <p>A close range punch with Extreme damage</p>
+                    </div>
+                </div>
+                <div class="donkeykong characterStats flex">
+                    <div class="statsContainer">
+                        <div class="health flex">
+                            <div>Health:</div>
+                            <div class="characterStatBar">
+                                <div id="donkeykongHealthStat"></div>
+                            </div>
+                        </div>
+                        <div class="attack flex">
+                            <div>Attack:</div>
+                            <div class="characterStatBar">
+                                <div id="donkeykongAttackStat"></div>
+                            </div>
+                        </div>
+                        <div class="movement flex">
+                            <div>Movement:</div>
+                            <div class="characterStatBar">
+                                <div id="donkeykongMovementStat"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="archer characterPicture flex" id="archerSelect"><img src="bilder/archerFace.png"></div>
+                <div class="archer characterDescription flex">
+                    <p>Archer is a long ranged specialist who is extremely agile. Allthough a bit fragile Archer
+                        utilizes his agility to dodge his opponents attacks and dish out his own. Be careful playing
+                        this character as not many hits are needed to bring him down. However if you succeed in dodging
+                        your oppenents attacks they will quickly get frustrated while struggling to hit you. Archer has
+                        not previously appeared in any video games.</p>
+                </div>
+                <div class="archer characterAttacks flex">
+                    <div class="eAttack flex">
+                        <p><span class="e">[E]</span> Bow punch:</p>
+                        <p>A close range bow punch attack with low damage</p>
+                    </div>
+                    <div class="rAttack flex">
+                        <p><span class="r">[R]</span> Arrow:</p>
+                        <p>Archer shoots an arrow dealing high damage</p>
+                    </div>
+                    <div class="fAttack flex">
+                        <p><span class="f">[F]</span> Flaming Arrow:</p>
+                        <p>Archer shoots a flaming arrow dealing extreme damage</p>
+                    </div>
+                </div>
+                <div class="archer characterStats flex">
+                    <div class="statsContainer">
+                        <div class="health flex">
+                            <div>Health:</div>
+                            <div class="characterStatBar">
+                                <div id="archerHealthStat"></div>
+                            </div>
+                        </div>
+                        <div class="attack flex">
+                            <div>Attack:</div>
+                            <div class="characterStatBar">
+                                <div id="archerAttackStat"></div>
+                            </div>
+                        </div>
+                        <div class="movement flex">
+                            <div>Movement:</div>
+                            <div class="characterStatBar">
+                                <div id="archerMovementStat"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+
+    <script src="characterSelect.js"></script>
+</body>
+
+</html>

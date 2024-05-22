@@ -1,0 +1,2603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FightClubLagring</title>
+    <style>
+        .flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#mainContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+canvas{
+    margin: 5px 0;
+    width: 1000px;
+    height: 500px;
+    border: 2px solid grey;
+    background-color: aliceblue;
+}
+button{
+    width: 100px;
+    height: 50px;
+}
+
+/* Topscreen Info */
+#topStats{
+    width: 1000px;
+    height: 100px;
+    background-color: wheat;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px;
+}
+#timer{
+    border: 2px solid gray;
+    background-color: antiquewhite;
+    font-size: 30px;
+}
+/*Player info*/
+.life{
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    border: 2px solid black;
+    margin: 0 10px;
+    background-color: white;
+    
+}
+/*Player 1*/
+#player1{
+    border: 2px solid gray;
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+    grid-template-columns: 1fr;
+    background-color: rgb(0, 64, 255);
+    color: white;
+}
+#player1Health{
+    grid-row: 1/2;
+    grid-column: 1/2;
+    font-size: 40px;
+}
+#player1Lives{
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+/*Player 2*/
+#player2{
+    border: 2px solid gray;
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+    grid-template-columns: 1fr;
+    background-color: red;
+    color: white;
+}
+#player2Health{
+    grid-row: 1/2;
+    grid-column: 1/2;
+    font-size: 40px;
+}
+#player2Lives{
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+
+
+    </style>
+
+</head>
+
+<body>
+    <div id="mainContainer">
+        <div id="topStats">
+            <div id="player1">
+                <div id="player1Health" class="flex">0%</div>
+                <div id="player1Lives" class="flex">
+                    <div id="player1Life3" class="life"></div>
+                    <div id="player1Life2" class="life"></div>
+                    <div id="player1Life1" class="life"></div>
+                </div>
+            </div>
+            <div id="timer" class="flex">
+                <p id="tid">
+                    <span id="minute">00</span>
+                    :
+                    <span id="second">00</span>
+                </p>
+            </div>
+            <div id="player2">
+                <div id="player2Health" class="flex">0%</div>
+                <div id="player2Lives" class="flex">
+                    <div id="player2Life3" class="life"></div>
+                    <div id="player2Life2" class="life"></div>
+                    <div id="player2Life1" class="life"></div>
+                </div>
+            </div>
+        </div>
+        <canvas></canvas>
+        <div id="buttonSelect" class="flex">
+            <div>
+                <button id="allRound">AllRound</button>
+                <button id="tank">Tank</button>
+                <button id="archer">Archer</button>
+            </div>
+            <div>
+                <button id="allRound2">AllRound2</button>
+                <button id="tank2">Tank2</button>
+                <button id="archer2">Archer2</button>
+            </div>
+        </div>
+
+    </div>
+    <script>
+const canvas = document.querySelector("canvas")
+const ctx = canvas.getContext("2d")
+canvas.width = 1000
+canvas.height = 500
+
+
+
+
+
+//Characters
+//Player 1
+const allRound = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 50, // bredde
+    height: 100, // høyde
+    color: 'blue', // fyllfarge
+    speed: 3, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 6,
+    jumpheight: 5,
+    health: 200,
+    healthreset: 200,
+    lives: 3,
+    ultCharge: 100,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/tarzanUtenBak.png',
+};
+const gunshot = {
+    x: 300,
+    y: canvas.height / 2,
+    width: 40, // bredde
+    height: 40, // høyde
+    color: "green",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 1,
+    y_velocity: 0,
+    y_startvelocity: 1,
+    damage: 10,
+    ultPoints: 10,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/coconut.png',
+
+}
+const whip = {
+    x: allRound.x + allRound.width,
+    y: allRound.y + allRound.height / 4,
+    width: 30,
+    height: 30,
+    color: "green",
+    damage: 20,
+    ultPoints: 10,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/whip.png',
+}
+const junglePunch = {
+    x: allRound.x + allRound.width,
+    y: allRound.y + allRound.height / 4,
+    width: 100,
+    height: 50,
+    color: "green",
+    damage: 40,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/junglePunch.png',
+}
+
+const tank = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 80, // bredde
+    height: 130, // høyde
+    color: 'saddlebrown', // fyllfarge
+    speed: 2, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 10,
+    jumpheight: 3,
+    health: 340,
+    healthreset: 340,
+    lives: 3,
+    ultCharge: 100,
+    imageWidth: 100,
+    imageHeight: 180,
+    imageOffsetX: 15,
+    imageOffsetY: 30,
+    src: 'bilder/donkeykong.png',
+}
+const rockThrow = {
+    x: tank.x,
+    y: tank.y,
+    width: 50, // bredde
+    height: 50, // høyde
+    color: "green",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 6,
+    y_velocity: 0,
+    y_startvelocity: 5,
+    damage: 10,
+    ultPoints: 15,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/stone.png',
+}
+const punch = {
+    x: tank.x + tank.width,
+    y: tank.y + tank.height / 4,
+    width: 60,
+    height: 60,
+    color: "saddlebrown",
+    damage: 30,
+    ultPoints: 10,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/punch.png',
+}
+const smashPunch = {
+    x: tank.x + tank.width,
+    y: tank.y + tank.height / 4,
+    width: 100,
+    height: 100,
+    color: "saddlebrown",
+    damage: 60,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/smashPunch.png',
+}
+
+const archer = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 40, // bredde
+    height: 80, // høyde
+    color: 'green', // fyllfarge
+    speed: 4, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 4,
+    jumpheight: 6,
+    health: 140,
+    healthreset: 140,
+    lives: 3,
+    ultCharge: 100,
+    imageWidth: 150,
+    imageHeight: 100,
+    imageOffsetX: 50,
+    imageOffsetY: 20,
+    src: 'bilder/archer.png',
+
+}
+const arrow = {
+    x: archer.x,
+    y: archer.y,
+    width: 50,
+    height: 20,
+    color: "green",
+    projSpeed: 7,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    damage: 15,
+    ultPoints: 15,
+    imageWidth: 60,
+    imageHeight: 60,
+    imageOffsetX: 10,
+    imageOffsetY: 20,
+    src: 'bilder/arrow.png',
+}
+const bowPunch = {
+    x: archer.x,
+    y: archer.y,
+    width: 20,
+    height: 20,
+    color: "green",
+    damage: 15,
+    ultPoints: 15,
+    imageWidth: 40,
+    imageHeight: 40,
+    imageOffsetX: 0,
+    imageOffsetY: 10,
+    src: 'bilder/knife.png',
+}
+const flamingArrow = {
+    x: archer.x,
+    y: archer.y,
+    width: 60,
+    height: 30,
+    color: "green",
+    projSpeed: 12,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    damage: 45,
+    imageWidth: 90,
+    imageHeight: 70,
+    imageOffsetX: 25,
+    imageOffsetY: 25,
+    src: 'bilder/flamingArrow.png',
+}
+//Player 2
+const allRoundPlayer2 = {
+    x: canvas.width - 100, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 50, // bredde
+    height: 100, // høyde
+    color: 'red', // fyllfarge
+    speed: 3, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 6,
+    jumpheight: 5,
+    health: 200,
+    healthreset: 200,
+    lives: 3,
+    ultCharge: 100,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/tarzanUtenBak.png',
+};
+const gunshotPlayer2 = {
+    x: 300,
+    y: canvas.height / 2,
+    width: 150, // bredde
+    height: 40, // høyde
+    color: "red",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    damage: 10,
+    ultPoints: 10,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/coconut.png',
+
+}
+const whipPlayer2 = {
+    x: allRound.x,
+    y: allRound.y,
+    width: 30,
+    height: 30,
+    color: "green",
+    damage: 20,
+    ultPoints: 10,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/whip.png',
+}
+const junglePunchPlayer2 = {
+    x: allRound.x + allRound.width,
+    y: allRound.y + allRound.height / 4,
+    width: 100,
+    height: 50,
+    color: "green",
+    damage: 40,
+    imageWidth: 100,
+    imageHeight: 120,
+    imageOffsetX: 30,
+    imageOffsetY: 10,
+    src: 'bilder/junglePunch.png',
+}
+
+const tankPlayer2 = {
+    x: canvas.width - 130, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 80, // bredde
+    height: 130, // høyde
+    color: 'red', // fyllfarge
+    speed: 2, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 10,
+    jumpheight: 3,
+    health: 340,
+    healthreset: 340,
+    lives: 3,
+    ultCharge: 100,
+    imageWidth: 100,
+    imageHeight: 180,
+    imageOffsetX: 15,
+    imageOffsetY: 30,
+    src: 'bilder/donkeykong.png',
+}
+const rockThrowPlayer2 = {
+    x: tank.x,
+    y: tank.y,
+    width: 50, // bredde
+    height: 50, // høyde
+    color: "red",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 6,
+    y_velocity: 0,
+    y_startvelocity: 5,
+    damage: 10,
+    ultPoints: 15,
+
+
+}
+const punchPlayer2 = {
+    x: tank.x,
+    y: tank.y,
+    width: 60,
+    height: 60,
+    color: "saddlebrown",
+    damage: 30,
+    ultPoints: 10,
+}
+const smashPunchPlayer2 = {
+    x: tank.x + tank.width,
+    y: tank.y + tank.height / 4,
+    width: 100,
+    height: 100,
+    color: "saddlebrown",
+    damage: 60,
+}
+const archerPlayer2 = {
+    x: canvas.width - 90, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 40, // bredde
+    height: 80, // høyde
+    color: 'red', // fyllfarge
+    speed: 4, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 4,
+    jumpheight: 6,
+    health: 140,
+    healthreset: 140,
+    lives: 3,
+    ultCharge: 100,
+    imageWidth: 150,
+    imageHeight: 100,
+    imageOffsetX: 50,
+    imageOffsetY: 20,
+    src: 'bilder/archer.png',
+}
+const arrowPlayer2 = {
+    x: archer.x,
+    y: archer.y,
+    width: 40,
+    height: 20,
+    color: "red",
+    projSpeed: 7,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    damage: 15,
+    ultPoints: 15,
+    imageWidth: 60,
+    imageHeight: 60,
+    imageOffsetX: 10,
+    imageOffsetY: 20,
+    src: 'bilder/arrow.png',
+}
+const bowPunchPlayer2 = {
+    x: archer.x,
+    y: archer.y,
+    width: 20,
+    height: 20,
+    color: "green",
+    damage: 15,
+    ultPoints: 15,
+    imageWidth: 40,
+    imageHeight: 40,
+    imageOffsetX: 0,
+    imageOffsetY: 10,
+    src: 'bilder/knife.png',
+}
+const flamingArrowPlayer2 = {
+    x: archer.x,
+    y: archer.y,
+    width: 60,
+    height: 30,
+    color: "green",
+    projSpeed: 12,
+    damage: 45,
+    
+}
+
+// Character Select
+let projectileChosen = "notpicked"
+let player2ProjectileChosen = "notpicked"
+let meleeChosen = "notpicked"
+let player2MeleeChosen = "notpicked"
+let ultimateChosen = "notpicked"
+let player2UltimateChosen = "notpicked"
+
+
+
+let characterImport = sessionStorage.getItem('player1Character')
+if(characterImport == 1){
+    characterImport = allRound
+    projectileChosen = gunshot
+    meleeChosen = whip
+    ultimateChosen = junglePunch
+}
+else if(characterImport == 2){
+    characterImport = tank
+    projectileChosen = rockThrow
+    meleeChosen = punch
+    ultimateChosen = smashPunch
+}
+else{
+    characterImport = archer
+    projectileChosen = arrow
+    meleeChosen = bowPunch
+    ultimateChosen = flamingArrow
+}
+let player2CharacterImport = sessionStorage.getItem('player2Character')
+if(player2CharacterImport == 1){
+    player2CharacterImport = allRoundPlayer2
+    player2ProjectileChosen = gunshotPlayer2
+    player2MeleeChosen = whipPlayer2
+    player2ltimateChosen = junglePunchPlayer2
+}
+else if(player2CharacterImport == 2){
+    player2CharacterImport = tankPlayer2
+    player2ProjectileChosen = rockThrowPlayer2
+    player2MeleeChosen = punchPlayer2
+    player2UltimateChosen = smashPunchPlayer2
+}
+else{
+    player2CharacterImport = archerPlayer2
+    player2ProjectileChosen = arrowPlayer2
+    player2MeleeChosen = bowPunchPlayer2
+    player2UltimateChosen = flamingArrowPlayer2
+}
+let characterChosen = characterImport
+let player2CharacterChosen = player2CharacterImport
+
+
+
+
+
+
+let imgPlayer1 = new Image();
+imgPlayer1.src = characterChosen.src; // Correct path to the image
+imgPlayer1.onload = function() {
+    // Start drawing only after the image is loaded
+    drawRectangle(characterChosen);
+};
+
+let imgPlayer2 = new Image();
+imgPlayer2.src = player2CharacterChosen.src; // Correct path to the image
+imgPlayer2.onload = function() {
+    // Start drawing only after the image is loaded
+    drawRectangle(player2CharacterChosen);
+};
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    requestAnimationFrame(clearCanvas);
+}
+clearCanvas();
+function drawRectangle(character) {
+    ctx.fillStyle = character.color;
+    ctx.fillRect(character.x, character.y, character.width, character.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (isLookingRight) {
+        ctx.drawImage(imgPlayer1, character.x - character.imageOffsetX, character.y - character.imageOffsetY, character.imageWidth, character.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(imgPlayer1, -(character.x + character.imageWidth) + character.imageOffsetX, character.y - character.imageOffsetY, character.imageWidth, character.imageHeight);
+        ctx.restore();
+    }
+}
+
+function player2DrawRectangle(player2Character) {
+    ctx.fillStyle = player2Character.color;
+    ctx.fillRect(player2Character.x, player2Character.y, player2Character.width, player2Character.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (player2IsLookingRight) {
+        ctx.drawImage(imgPlayer2, player2Character.x - player2Character.imageOffsetX, player2Character.y - player2Character.imageOffsetY, player2Character.imageWidth, player2Character.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(imgPlayer2, -(player2Character.x + player2Character.imageWidth) + player2Character.imageOffsetX, player2Character.y - player2Character.imageOffsetY, player2Character.imageWidth, player2Character.imageHeight);
+        ctx.restore();
+    }
+}
+
+//Movement
+let isLookingRight = true
+let player2IsLookingRight = false
+
+function movement() {
+
+
+    //player 1
+    //Right
+
+    let animationRight;
+    let isDpressed = false
+
+    function moveRight() {
+        characterChosen.x_velocity = characterChosen.speed
+        characterChosen.x += characterChosen.speed
+        drawRectangle(characterChosen)
+        animationRight = requestAnimationFrame(moveRight)
+        if (projectileActive) {
+            drawProjectileRect(projectileChosen)
+        }
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'd' || event.key === 'D') {
+            if (!isDpressed) {
+                moveRight()
+                isDpressed = true;
+                isLookingRight = true
+
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'd' || event.key === 'D') {
+
+            cancelAnimationFrame(animationRight)
+            characterChosen.x_velocity = 0
+            isDpressed = false
+        }
+    });
+
+
+    //Left
+    let animationLeft;
+    let isApressed = false
+
+    function moveLeft() {
+        characterChosen.x_velocity = characterChosen.speed
+        characterChosen.x -= characterChosen.speed
+        drawRectangle(characterChosen)
+        animationLeft = requestAnimationFrame(moveLeft)
+        if (projectileActive) {
+            drawProjectileRect(projectileChosen)
+        }
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'a' || event.key === 'A') {
+            if (!isApressed) {
+                moveLeft()
+                isApressed = true;
+                isLookingRight = false
+
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'a' || event.key === 'A') {
+
+            cancelAnimationFrame(animationLeft)
+            isApressed = false
+        }
+    });
+
+    //jump
+
+    let jumpArr = ["jump", "jump"]
+    let isWpressed = false
+    let isJumpStopped = false
+    let isJumpActive = false
+
+
+
+
+
+    let animationJump;
+    let timeooutId;
+
+    function stopJump() {
+        if (!isJumpActive) {
+            cancelAnimationFrame(animationJump)
+            isWpressed = false
+            jumpArr.shift()
+            isJumpStopped = true
+            isJumpActive = true
+        }
+
+
+    }
+
+    function jump() {
+
+        characterChosen.y_velocity = 0
+        characterChosen.y_velocity = characterChosen.jumpheight
+        characterChosen.y -= characterChosen.y_velocity
+        drawRectangle(characterChosen)
+        animationJump = requestAnimationFrame(jump)
+        if (projectileActive) {
+            drawProjectileRect(projectileChosen)
+        }
+
+
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (!isJumpStopped && (event.key === 'w' || event.key === 'W')) {
+            if (!isWpressed && jumpArr.length > 0) {
+                jump()
+                isWpressed = true;
+                timeooutId = setTimeout(stopJump, 500)
+                console.log("charcter ser", isLookingRight)
+
+
+            }
+
+        }
+    });
+
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'w' || event.key === 'W') {
+
+            clearTimeout(timeooutId)
+            stopJump()
+            isJumpStopped = false
+            isJumpActive = false
+
+
+        }
+    });
+
+
+
+    //gravity
+
+    function tyngdekraft() {
+        if (characterChosen.y < canvas.height - characterChosen.height && !isWpressed) {
+            characterChosen.y_velocity = characterChosen.gravity
+            characterChosen.y += characterChosen.y_velocity
+        }
+        else if (characterChosen.y >= canvas.height - characterChosen.height) {
+            if (jumpArr.length === 0) {
+                jumpArr.push("jump", "jump")
+            }
+
+            if (jumpArr.length === 1) {
+                jumpArr.push("jump")
+            }
+
+        }
+        else {
+            y_velocity = 0
+
+        }
+    }
+    function gravityCharacter() {
+        tyngdekraft()
+        drawRectangle(characterChosen)
+        requestAnimationFrame(gravityCharacter)
+
+    }
+    gravityCharacter()
+
+    //player 2
+    //Right
+    let player2AnimationRight;
+    let player2IsDpressed = false
+
+    function player2MoveRight() {
+        player2CharacterChosen.x_velocity = player2CharacterChosen.speed
+        player2CharacterChosen.x += player2CharacterChosen.speed
+        player2DrawRectangle(player2CharacterChosen)
+        player2AnimationRight = requestAnimationFrame(player2MoveRight)
+        if (projectileActive) {
+            player2DrawProjectileRect(player2ProjectileChosen)
+        }
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'ArrowRight') {
+            if (!player2IsDpressed) {
+                player2MoveRight()
+                player2IsDpressed = true;
+                player2IsLookingRight = true
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'ArrowRight') {
+
+            cancelAnimationFrame(player2AnimationRight)
+            player2CharacterChosen.x_velocity = 0
+            player2IsDpressed = false
+        }
+    });
+
+    //Left
+    let player2AnimationLeft;
+    let player2IsApressed = false
+
+    function player2MoveLeft() {
+        player2CharacterChosen.x_velocity = player2CharacterChosen.speed
+        player2CharacterChosen.x -= player2CharacterChosen.speed
+        player2DrawRectangle(player2CharacterChosen)
+        player2AnimationLeft = requestAnimationFrame(player2MoveLeft)
+        if (projectileActive) {
+            player2DrawProjectileRect(player2ProjectileChosen)
+        }
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'ArrowLeft') {
+            if (!player2IsApressed) {
+                player2MoveLeft()
+                player2IsApressed = true;
+                player2IsLookingRight = false
+
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'ArrowLeft') {
+
+            cancelAnimationFrame(player2AnimationLeft)
+            player2IsApressed = false
+        }
+    });
+
+    //jump
+
+    let player2JumpArr = ["jump", "jump"]
+    let player2isWpressed = false
+    let player2isJumpStopped = false
+    let player2isJumpActive = false
+
+
+
+
+
+    let player2animationJump;
+    let player2timeooutId;
+
+    function player2StopJump() {
+        if (!player2isJumpActive) {
+            cancelAnimationFrame(player2animationJump)
+            player2isWpressed = false
+            player2JumpArr.shift()
+            player2isJumpStopped = true
+            player2isJumpActive = true
+        }
+
+
+    }
+
+    function player2Jump() {
+
+        player2CharacterChosen.y_velocity = 0
+        player2CharacterChosen.y_velocity = player2CharacterChosen.jumpheight
+        player2CharacterChosen.y -= player2CharacterChosen.y_velocity
+        player2DrawRectangle(player2CharacterChosen)
+        player2animationJump = requestAnimationFrame(player2Jump)
+        if (projectileActive) {
+            player2DrawProjectileRect(player2ProjectileChosen)
+        }
+
+
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (!player2isJumpStopped && (event.key === 'ArrowUp')) {
+            if (!player2isWpressed && player2JumpArr.length > 0) {
+                player2Jump()
+                player2isWpressed = true;
+                player2timeooutId = setTimeout(player2StopJump, 500)
+                console.log("charcter ser", player2IsLookingRight)
+
+
+            }
+
+        }
+    });
+
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'ArrowUp') {
+
+            clearTimeout(player2timeooutId)
+            player2StopJump()
+            player2isJumpStopped = false
+            player2isJumpActive = false
+
+
+        }
+    });
+
+
+
+    //gravity
+
+    function player2Tyngdekraft() {
+        if (player2CharacterChosen.y < canvas.height - player2CharacterChosen.height && !player2isWpressed) {
+            player2CharacterChosen.y_velocity = player2CharacterChosen.gravity
+            player2CharacterChosen.y += player2CharacterChosen.y_velocity
+        }
+        else if (player2CharacterChosen.y >= canvas.height - player2CharacterChosen.height) {
+            if (player2JumpArr.length === 0) {
+                player2JumpArr.push("jump", "jump")
+            }
+
+            if (player2JumpArr.length === 1) {
+                player2JumpArr.push("jump")
+            }
+
+        }
+        else {
+            y_velocity = 0
+
+        }
+    }
+    function player2GravityCharacter() {
+        player2Tyngdekraft()
+        player2DrawRectangle(player2CharacterChosen)
+        requestAnimationFrame(player2GravityCharacter)
+
+    }
+    player2GravityCharacter()
+
+}
+
+
+// Projectiles
+//player 1
+let projectileImgPlayer1 = new Image();
+projectileImgPlayer1.src = projectileChosen.src; // Correct path to the image
+projectileImgPlayer1.onload = function() {
+    // Start drawing only after the image is loaded
+    drawProjectileRect(projectileChosen);
+};
+
+function drawProjectileRect(projectile) {
+    ctx.fillStyle = projectile.color;
+    ctx.fillRect(projectile.x, projectile.y, projectile.width, projectile.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (projectileDirectionRight) {
+        ctx.drawImage(projectileImgPlayer1, projectile.x - projectile.imageOffsetX, projectile.y - projectile.imageOffsetY, projectile.imageWidth, projectile.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(projectileImgPlayer1, -(projectile.x + projectile.imageWidth) + projectile.imageOffsetX, projectile.y - projectile.imageOffsetY, projectile.imageWidth, projectile.imageHeight);
+        ctx.restore();
+    }
+}
+
+let animationProjLeft;
+let animationProjRight;
+let projectileReady = true
+let projectileActive = false
+let projectileDirectionRight = true
+let gravityStarted = false
+let gravityCooldown = false
+let hasDamageBeenTaken = false
+
+
+
+const player1Health = document.getElementById("player1Health")
+const player2Health = document.getElementById("player2Health")
+
+// DamageDisplaying
+function healthDisplayUpdate() {
+    player2Health.innerHTML = Math.round((player2CharacterChosen.health / player2CharacterChosen.healthreset) * 100) + "%"
+    player1Health.innerHTML = Math.round((characterChosen.health / characterChosen.healthreset) * 100) + "%"
+    console.log("health")
+}
+function checkForDead() {
+    if (characterChosen.health < 0) {
+        characterChosen.health = characterChosen.healthreset
+        characterChosen.x = 50
+        characterChosen.y = canvas.height / 2
+        characterChosen.lives -= 1
+        console.log("lives", characterChosen.lives)
+        healthDisplayUpdate()
+        if (characterChosen.lives == 2) {
+            player1Life1.style.backgroundColor = "black"
+        }
+        else if (characterChosen.lives == 1) {
+            player1Life2.style.backgroundColor = "black"
+        }
+        else {
+            player1Life3.style.backgroundColor = "black"
+        }
+    }
+    if (player2CharacterChosen.health < 0) {
+        player2CharacterChosen.health = player2CharacterChosen.healthreset
+        player2CharacterChosen.x = canvas.width - (50 + player2CharacterChosen.width)
+        player2CharacterChosen.y = canvas.height / 2
+        player2CharacterChosen.lives -= 1
+        console.log("lives", player2CharacterChosen.lives)
+        healthDisplayUpdate()
+        if (player2CharacterChosen.lives == 2) {
+            player2Life1.style.backgroundColor = "black"
+        }
+        else if (player2CharacterChosen.lives == 1) {
+            player2Life2.style.backgroundColor = "black"
+        }
+        else {
+            player2Life3.style.backgroundColor = "black"
+        }
+    }
+}
+
+
+function gravityProj() {
+    gravityStarted = true
+    gravityCooldown = true
+}
+function damageReset() {
+    hasDamageBeenTaken = false
+}
+function projectileSpeed() {
+    if (projectileDirectionRight) {
+        if (!gravityStarted) {
+            projectileChosen.x += projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.y_startvelocity
+            projectileChosen.y -= projectileChosen.y_velocity
+        }
+        else {
+            projectileChosen.x += projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.gravity
+            projectileChosen.y += projectileChosen.y_velocity
+        }
+        if (!gravityCooldown) {
+            setTimeout(gravityProj, 1000)
+        }
+        drawProjectileRect(projectileChosen)
+        animationProjLeft = requestAnimationFrame(projectileSpeed)
+    }
+    else {
+        if (!gravityStarted) {
+            projectileChosen.x -= projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.y_startvelocity
+            projectileChosen.y -= projectileChosen.y_velocity
+        }
+        else {
+            projectileChosen.x -= projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.gravity
+            projectileChosen.y += projectileChosen.y_velocity
+        }
+        if (!gravityCooldown) {
+            setTimeout(gravityProj, 1000)
+        }
+        drawProjectileRect(projectileChosen)
+        animationProjRight = requestAnimationFrame(projectileSpeed)
+
+    }
+    if (checkOverlap(projectileChosen, player2CharacterChosen)) {
+        console.log("Overlap detected!");
+        if (!hasDamageBeenTaken) {
+            hasDamageBeenTaken = true
+            player2CharacterChosen.health = player2CharacterChosen.health - projectileChosen.damage
+            setTimeout(damageReset, 1000)
+            console.log(player2CharacterChosen.health)
+            console.log(characterChosen.healthreset)
+            console.log(characterChosen.health / characterChosen.healthreset)
+            healthDisplayUpdate()
+            checkForDead()
+            characterChosen.ultCharge += projectileChosen.ultPoints
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+}
+function cancelProjectile() {
+    cancelAnimationFrame(animationProjLeft)
+    cancelAnimationFrame(animationProjRight)
+    gravityStarted = false
+    gravityCooldown = false
+}
+function projectileCooldown() {
+    projectileReady = true
+    projectileActive = false
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === 'r' || event.key === 'R') {
+        console.log("gravity", gravityStarted)
+        if (projectileReady) {
+            if (isLookingRight) {
+                projectileDirectionRight = true
+            }
+            else {
+                projectileDirectionRight = false
+            }
+            projectileActive = true
+            projectileChosen.x = characterChosen.x
+            projectileChosen.y = characterChosen.y + characterChosen.height / 4
+            console.log("r pressed")
+            projectileSpeed()
+            setTimeout(cancelProjectile, 2001)
+            projectileReady = false
+            setTimeout(projectileCooldown, 2000)
+        }
+
+
+
+    }
+});
+//player 2
+let projectileImgPlayer2 = new Image();
+projectileImgPlayer2.src = player2ProjectileChosen.src; // Correct path to the image
+projectileImgPlayer2.onload = function() {
+    // Start drawing only after the image is loaded
+    player2DrawProjectileRect(player2ProjectileChosen);
+};
+
+function player2DrawProjectileRect(projectilePlayer2) {
+    ctx.fillStyle = projectilePlayer2.color;
+    ctx.fillRect(projectilePlayer2.x, projectilePlayer2.y, projectilePlayer2.width, projectilePlayer2.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (player2ProjectileDirectionRight) {
+        ctx.drawImage(projectileImgPlayer2, projectilePlayer2.x - projectilePlayer2.imageOffsetX, projectilePlayer2.y - projectilePlayer2.imageOffsetY, projectilePlayer2.imageWidth, projectilePlayer2.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(projectileImgPlayer2, -(projectilePlayer2.x + projectilePlayer2.imageWidth) + projectilePlayer2.imageOffsetX, projectilePlayer2.y - projectilePlayer2.imageOffsetY, projectilePlayer2.imageWidth, projectilePlayer2.imageHeight);
+        ctx.restore();
+    }
+}
+
+
+
+
+let player2AnimationProjLeft;
+let player2AnimationProjRight;
+let player2ProjectileReady = true
+let player2ProjectileActive = false
+let player2ProjectileDirectionRight = true
+let player2GravityStarted = false
+let player2GravityCooldown = false
+let player2HasDamageBeenTaken = false
+
+
+
+
+
+
+function player2GravityProj() {
+    player2GravityStarted = true
+    player2GravityCooldown = true
+}
+function player2DamageReset() {
+    player2HasDamageBeenTaken = false
+}
+function player2ProjectileSpeed() {
+    if (player2ProjectileDirectionRight) {
+        if (!player2GravityStarted) {
+            player2ProjectileChosen.x += player2ProjectileChosen.projSpeed
+            player2ProjectileChosen.y_velocity = player2ProjectileChosen.y_startvelocity
+            player2ProjectileChosen.y -= player2ProjectileChosen.y_velocity
+        }
+        else {
+            player2ProjectileChosen.x += player2ProjectileChosen.projSpeed
+            player2ProjectileChosen.y_velocity = player2ProjectileChosen.gravity
+            player2ProjectileChosen.y += player2ProjectileChosen.y_velocity
+        }
+        if (!player2GravityCooldown) {
+            setTimeout(player2GravityProj, 1000)
+        }
+        player2DrawProjectileRect(player2ProjectileChosen)
+        player2AnimationProjLeft = requestAnimationFrame(player2ProjectileSpeed)
+    }
+    else {
+        if (!player2GravityStarted) {
+            player2ProjectileChosen.x -= player2ProjectileChosen.projSpeed
+            player2ProjectileChosen.y_velocity = player2ProjectileChosen.y_startvelocity
+            player2ProjectileChosen.y -= player2ProjectileChosen.y_velocity
+        }
+        else {
+            player2ProjectileChosen.x -= player2ProjectileChosen.projSpeed
+            player2ProjectileChosen.y_velocity = player2ProjectileChosen.gravity
+            player2ProjectileChosen.y += player2ProjectileChosen.y_velocity
+        }
+        if (!player2GravityCooldown) {
+            setTimeout(player2GravityProj, 1000)
+        }
+        player2DrawProjectileRect(player2ProjectileChosen)
+        player2AnimationProjRight = requestAnimationFrame(player2ProjectileSpeed)
+
+    }
+    if (checkOverlap(player2ProjectileChosen, characterChosen)) {
+        console.log("Overlap detected!");
+        if (!player2HasDamageBeenTaken) {
+            player2HasDamageBeenTaken = true
+            characterChosen.health = characterChosen.health - player2ProjectileChosen.damage
+            setTimeout(player2DamageReset, 1000)
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+            player2CharacterChosen.ultCharge += player2ProjectileChosen.ultPoints
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+}
+function player2CancelProjectile() {
+    cancelAnimationFrame(player2AnimationProjLeft)
+    cancelAnimationFrame(player2AnimationProjRight)
+    player2GravityStarted = false
+    player2GravityCooldown = false
+}
+function player2ProjectileCooldown() {
+    player2ProjectileReady = true
+    player2ProjectileActive = false
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === '-' || event.key === '_') {
+        console.log("gravity", player2GravityStarted)
+        if (player2ProjectileReady) {
+            if (player2IsLookingRight) {
+                player2ProjectileDirectionRight = true
+            }
+            else {
+                player2ProjectileDirectionRight = false
+            }
+            player2ProjectileActive = true
+            player2ProjectileChosen.x = player2CharacterChosen.x
+            player2ProjectileChosen.y = player2CharacterChosen.y + player2CharacterChosen.height / 4
+            player2ProjectileSpeed()
+            setTimeout(player2CancelProjectile, 2001)
+            player2ProjectileReady = false
+            setTimeout(player2ProjectileCooldown, 2000)
+        }
+
+
+
+    }
+});
+
+// Melee attack
+// Player 1
+
+let meleeImgPlayer1 = new Image();
+meleeImgPlayer1.src = meleeChosen.src; // Correct path to the image
+meleeImgPlayer1.onload = function() {
+    // Start drawing only after the image is loaded
+    drawMeleeRect(meleeChosen);
+};
+
+function drawMeleeRect(melee) {
+    ctx.fillStyle = melee.color;
+    ctx.fillRect(melee.x, melee.y, melee.width, melee.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (isLookingRight) {
+        ctx.drawImage(meleeImgPlayer1, melee.x - melee.imageOffsetX, melee.y - melee.imageOffsetY, melee.imageWidth, melee.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(meleeImgPlayer1, -(melee.x + melee.imageWidth) + melee.imageOffsetX, melee.y - melee.imageOffsetY, melee.imageWidth, melee.imageHeight);
+        ctx.restore();
+    }
+}
+
+
+let meleeReady = true
+let animationMeleeRight;
+let hasMeleeDamageBeenTaken = false
+
+
+function meleeAttack() {
+    if (isLookingRight) {
+        meleeChosen.x = characterChosen.x + characterChosen.width
+        meleeChosen.y = characterChosen.y + characterChosen.height / 4
+    }
+    else {
+        meleeChosen.x = characterChosen.x - meleeChosen.width
+        meleeChosen.y = characterChosen.y + characterChosen.height / 4
+    }
+    drawMeleeRect(meleeChosen)
+    animationMeleeRight = requestAnimationFrame(meleeAttack)
+    if (checkOverlap(meleeChosen, player2CharacterChosen)) {
+        console.log("Overlap detected!");
+        if (!hasMeleeDamageBeenTaken) {
+            hasMeleeDamageBeenTaken = true
+            player2CharacterChosen.health = player2CharacterChosen.health - meleeChosen.damage
+            setTimeout(meleeDamageReset, 1000)
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+            characterChosen.ultCharge += meleeChosen.ultPoints
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+}
+function meleeCooldown() {
+    meleeReady = true
+}
+function meleeDuration() {
+    cancelAnimationFrame(animationMeleeRight)
+}
+function meleeDamageReset() {
+    hasMeleeDamageBeenTaken = false
+}
+document.addEventListener("keydown", function (event) {
+    if (event.key === 'e' || event.key === 'E') {
+        if (meleeReady) {
+            meleeAttack()
+            console.log("e pressed")
+            meleeReady = false
+            setTimeout(meleeDuration, 1000)
+            setTimeout(meleeCooldown, 2000)
+
+
+        }
+
+
+    }
+});
+// Player 2
+let meleeImgPlayer2 = new Image();
+meleeImgPlayer2.src = player2MeleeChosen.src; // Correct path to the image
+meleeImgPlayer2.onload = function() {
+    // Start drawing only after the image is loaded
+    player2DrawMeleeRect(player2MeleeChosen);
+};
+
+function player2DrawMeleeRect(meleePlayer2) {
+    ctx.fillStyle = meleePlayer2.color;
+    ctx.fillRect(meleePlayer2.x, meleePlayer2.y, meleePlayer2.width, meleePlayer2.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (player2IsLookingRight) {
+        ctx.drawImage(meleeImgPlayer2, meleePlayer2.x - meleePlayer2.imageOffsetX, meleePlayer2.y - meleePlayer2.imageOffsetY, meleePlayer2.imageWidth, meleePlayer2.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(meleeImgPlayer2, -(meleePlayer2.x + meleePlayer2.imageWidth) + meleePlayer2.imageOffsetX, meleePlayer2.y - meleePlayer2.imageOffsetY, meleePlayer2.imageWidth, meleePlayer2.imageHeight);
+        ctx.restore();
+    }
+}
+
+
+
+
+let player2MeleeReady = true
+let player2AnimationMeleeRight;
+let player2HasMeleeDamageBeenTaken = false
+
+function player2MeleeAttack() {
+    if (player2IsLookingRight) {
+        player2MeleeChosen.x = player2CharacterChosen.x + player2CharacterChosen.width
+        player2MeleeChosen.y = player2CharacterChosen.y + player2CharacterChosen.height / 4
+    }
+    else {
+        player2MeleeChosen.x = player2CharacterChosen.x - player2MeleeChosen.width
+        player2MeleeChosen.y = player2CharacterChosen.y + player2CharacterChosen.height / 4
+    }
+    player2DrawMeleeRect(player2MeleeChosen)
+    player2AnimationMeleeRight = requestAnimationFrame(player2MeleeAttack)
+    if (checkOverlap(player2MeleeChosen, characterChosen)) {
+        console.log("Overlap detected!");
+        if (!player2HasMeleeDamageBeenTaken) {
+            player2HasMeleeDamageBeenTaken = true
+            characterChosen.health = characterChosen.health - player2MeleeChosen.damage
+            setTimeout(player2MeleeDamageReset, 1000)
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+            player2CharacterChosen.ultCharge += player2MeleeChosen.ultPoints
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+}
+function player2MeleeCooldown() {
+    player2MeleeReady = true
+}
+function player2MeleeDuration() {
+    cancelAnimationFrame(player2AnimationMeleeRight)
+}
+function player2MeleeDamageReset() {
+    player2HasMeleeDamageBeenTaken = false
+}
+document.addEventListener("keydown", function (event) {
+    if (event.key === '@' || event.key === '*') {
+        if (player2MeleeReady) {
+            player2MeleeAttack()
+            console.log("e pressed")
+            player2MeleeReady = false
+            setTimeout(player2MeleeDuration, 1000)
+            setTimeout(player2MeleeCooldown, 2000)
+
+
+        }
+
+
+    }
+});
+
+//Special attacks
+// Player 1
+// Melee special
+let ultimateReady = true
+let ultimateAnimationRight;
+let ultimateHasDamageBeenTaken = false
+
+function drawUltimateMeleeRect() {
+    ctx.fillStyle = ultimateChosen.color;
+    ctx.fillRect(ultimateChosen.x, ultimateChosen.y, ultimateChosen.width, ultimateChosen.height);
+}
+function ultimateMeleeAttack() {
+    if (isLookingRight) {
+        ultimateChosen.x = characterChosen.x + characterChosen.width
+        ultimateChosen.y = characterChosen.y + characterChosen.height / 4
+    }
+    else {
+        ultimateChosen.x = characterChosen.x - ultimateChosen.width
+        ultimateChosen.y = characterChosen.y + characterChosen.height / 4
+    }
+    drawUltimateMeleeRect()
+    ultimateAnimationRight = requestAnimationFrame(ultimateMeleeAttack)
+    if (checkOverlap(ultimateChosen, player2CharacterChosen)) {
+        if (!ultimateHasDamageBeenTaken) {
+            ultimateHasDamageBeenTaken = true
+            console.log("Overlap detected!");
+            player2CharacterChosen.health = player2CharacterChosen.health - ultimateChosen.damage
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+
+}
+function ultimateMeleeDuration() {
+    cancelAnimationFrame(ultimateAnimationRight)
+}
+function ultimateDamageCooldown() {
+    ultimateHasDamageBeenTaken = false
+}
+// Projectile ultimate
+let projectileUltimateImgPlayer1 = new Image();
+projectileUltimateImgPlayer1.src = ultimateChosen.src; // Correct path to the image
+projectileUltimateImgPlayer1.onload = function() {
+    // Start drawing only after the image is loaded
+    drawUltimateProjRect(ultimateChosen);
+};
+
+function drawUltimateProjRect(projUltimate) {
+    ctx.fillStyle = projUltimate.color;
+    ctx.fillRect(projUltimate.x, projUltimate.y, projUltimate.width, projUltimate.height); // Draw the rectangle
+    
+    // Draw the image at the rectangle position
+    if (isLookingRight) {
+        ctx.drawImage(projectileUltimateImgPlayer1, projUltimate.x - projUltimate.imageOffsetX, projUltimate.y - projUltimate.imageOffsetY, projUltimate.imageWidth, projUltimate.imageHeight);
+    } else {
+        // Flip the image horizontally
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(projectileUltimateImgPlayer1, -(projUltimate.x + projUltimate.imageWidth) + projUltimate.imageOffsetX, projUltimate.y - projUltimate.imageOffsetY, projUltimate.imageWidth, projUltimate.imageHeight);
+        ctx.restore();
+    }
+}
+
+function ultimateProjectileAttack() {
+    if (isLookingRight) {
+        ultimateChosen.x += ultimateChosen.projSpeed
+    }
+    else{
+        ultimateChosen.x -= ultimateChosen.projSpeed
+    }
+    drawUltimateProjRect(ultimateChosen)
+    ultimateAnimationRight = requestAnimationFrame(ultimateProjectileAttack)
+    if (checkOverlap(ultimateChosen, player2CharacterChosen)) {
+        if (!ultimateHasDamageBeenTaken) {
+            ultimateHasDamageBeenTaken = true
+            console.log("Overlap detected!");
+            player2CharacterChosen.health = player2CharacterChosen.health - ultimateChosen.damage
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === 'f' || event.key === 'F') {
+        if (characterChosen.ultCharge >= 100) {
+            characterChosen.ultCharge = 0
+            if (characterChosen != archer) {
+                ultimateMeleeAttack()
+                console.log("f pressed")
+                setTimeout(ultimateMeleeDuration, 2000)
+                setTimeout(ultimateDamageCooldown, 3000)
+            }
+            else{
+                flamingArrow.x = archer.x
+                flamingArrow.y = archer.y
+                ultimateProjectileAttack()
+                setTimeout(ultimateMeleeDuration, 2000)
+                setTimeout(ultimateDamageCooldown, 3000)
+            }
+
+
+
+        }
+
+
+    }
+});
+// Player 2
+// Melee special
+let player2UltimateReady = true
+let player2UltimateAnimationRight;
+let player2UltimateHasDamageBeenTaken = false
+
+function player2DrawUltimateMeleeRect() {
+    ctx.fillStyle = player2UltimateChosen.color;
+    ctx.fillRect(player2UltimateChosen.x, player2UltimateChosen.y, player2UltimateChosen.width, player2UltimateChosen.height);
+}
+function player2UltimateMeleeAttack() {
+    if (player2IsLookingRight) {
+        player2UltimateChosen.x = player2CharacterChosen.x + player2CharacterChosen.width
+        player2UltimateChosen.y = player2CharacterChosen.y + player2CharacterChosen.height / 4
+    }
+    else {
+        player2UltimateChosen.x = player2CharacterChosen.x - player2UltimateChosen.width
+        player2UltimateChosen.y = player2CharacterChosen.y + player2CharacterChosen.height / 4
+    }
+    player2DrawUltimateMeleeRect()
+    player2UltimateAnimationRight = requestAnimationFrame(player2UltimateMeleeAttack)
+    if (checkOverlap(player2UltimateChosen, characterChosen)) {
+        if (!player2UltimateHasDamageBeenTaken) {
+            player2UltimateHasDamageBeenTaken = true
+            console.log("Overlap detected!");
+            characterChosen.health = characterChosen.health - player2UltimateChosen.damage
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+
+}
+function player2UltimateMeleeDuration() {
+    cancelAnimationFrame(player2UltimateAnimationRight)
+}
+function player2UltimateDamageCooldown() {
+    player2UltimateHasDamageBeenTaken = false
+}
+// Projectile ultimate
+
+
+
+
+function player2UltimateProjectileAttack() {
+    if (player2IsLookingRight) {
+        player2UltimateChosen.x += player2UltimateChosen.projSpeed
+    }
+    else{
+        player2UltimateChosen.x -= player2UltimateChosen.projSpeed
+    }
+    player2DrawUltimateProjRect(ultimateChosen)
+    player2UltimateAnimationRight = requestAnimationFrame(player2UltimateProjectileAttack)
+    if (checkOverlap(player2UltimateChosen, characterChosen)) {
+        if (!player2UltimateHasDamageBeenTaken) {
+            player2UltimateHasDamageBeenTaken = true
+            console.log("Overlap detected!");
+            characterChosen.health = characterChosen.health - player2UltimateChosen.damage
+            console.log(characterChosen.health)
+            healthDisplayUpdate()
+            checkForDead()
+        }
+    } else {
+        console.log("No overlap detected.");
+    }
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === '.' || event.key === ':') {
+        if (player2CharacterChosen.ultCharge >= 100) {
+            player2CharacterChosen.ultCharge = 0
+            if (player2CharacterChosen != archerPlayer2) {
+                player2UltimateMeleeAttack()
+                console.log("f pressed")
+                setTimeout(player2UltimateMeleeDuration, 2000)
+                setTimeout(player2UltimateDamageCooldown, 3000)
+            }
+            else{
+                flamingArrowPlayer2.x = archerPlayer2.x
+                flamingArrowPlayer2.y = archerPlayer2.y
+                player2UltimateProjectileAttack()
+                setTimeout(player2UltimateMeleeDuration, 2000)
+                setTimeout(player2UltimateDamageCooldown, 3000)
+            }
+
+
+
+        }
+
+
+    }
+});
+
+
+//Overlap detection
+function checkOverlap(attack, character) {
+    if (
+        attack.x < character.x + character.width &&
+        attack.x + attack.width > character.x &&
+        attack.y < character.y + character.height &&
+        attack.y + attack.height > character.y
+    ) {
+        return true; // Overlap detected
+    } else {
+        return false; // No overlap
+    }
+}
+
+
+
+
+movement()
+
+
+
+//timer
+let sekund = 0
+let minutt = 0
+
+function clock() {
+    sekund += 1
+    if (sekund >= 60) {
+        sekund = 0
+        minutt += 1
+    }
+    if (sekund < 10) {
+        document.getElementById("second").innerHTML = "0" + sekund
+    }
+    else {
+        document.getElementById("second").innerHTML = sekund
+    }
+    if (minutt < 10) {
+        document.getElementById("minute").innerHTML = "0" + minutt
+    }
+    else {
+        document.getElementById("minute").innerHTML = minutt
+    }
+}
+setInterval(clock, 1000)
+
+//Character select
+/*
+let characterSelected = 0
+
+const characterArcher = document.getElementById("archer")
+characterArcher.addEventListener("click", changeArcher)
+function changeArcher() {
+    movement(archer)
+    characterSelected = 3
+    characterChosen = archer
+    projectileChosen = arrow
+    meleeChosen = bowPunch
+    ultimateChosen = flamingArrow
+}
+
+const characterTank = document.getElementById("tank")
+characterTank.addEventListener("click", changeTank)
+function changeTank() {
+    movement(tank)
+    console.log(allRound.x)
+    characterSelected = 2
+    characterChosen = tank
+    projectileChosen = rockThrow
+    meleeChosen = punch
+    ultimateChosen = smashPunch
+}
+
+const characterallRound = document.getElementById("allRound")
+characterallRound.addEventListener("click", changeAllround)
+function changeAllround() {
+    movement(allRound)
+    characterSelected = 1
+    characterChosen = allRound
+    projectileChosen = gunshot
+    meleeChosen = whip
+    ultimateChosen = junglePunch
+}
+*/
+
+// console.log(arrow2.height, arrow2.width, arrow2.color, arrow2.projSpeed, arrow2.x_velocity, arrow2.gravity, arrow2.y_velocity, arrow2.y_startvelocity)
+//ctx.clearRect(0, 0, canvas.width, canvas.height); // Tømmer canvasen
+
+
+// console.log(arrow2.height, arrow2.width, arrow2.color, arrow2.projSpeed, arrow2.x_velocity, arrow2.gravity, arrow2.y_velocity, arrow2.y_startvelocity)
+
+/*
+const canvas = document.querySelector("canvas")
+const ctx = canvas.getContext("2d")
+canvas.width = 1000
+canvas.height = 500
+
+
+//Characters
+//Player 1
+const allRound = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 50, // bredde
+    height: 100, // høyde
+    color: 'blue', // fyllfarge
+    speed: 3, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 6,
+    jumpheight: 5,
+    player1: true,
+
+};
+const gunshot = {
+    x: 300,
+    y: canvas.height / 2,
+    width: 150, // bredde
+    height: 40, // høyde
+    color: "green",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    player1: true,
+
+
+}
+const tank = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 80, // bredde
+    height: 130, // høyde
+    color: 'saddlebrown', // fyllfarge
+    speed: 2, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 10,
+    jumpheight: 3,
+    player1: true,
+}
+const rockThrow = {
+    x: tank.x,
+    y: tank.y,
+    width: 50, // bredde
+    height: 50, // høyde
+    color: "green",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 6,
+    y_velocity: 0,
+    y_startvelocity: 5,
+    player1: true,
+
+
+}
+const archer = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 40, // bredde
+    height: 80, // høyde
+    color: 'green', // fyllfarge
+    speed: 4, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 4,
+    jumpheight: 6,
+    player1: true,
+}
+const arrow = {
+    x: archer.x,
+    y: archer.y,
+    width: 40,
+    height: 20,
+    color: "green",
+    projSpeed: 7,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    player1: true,
+
+}
+//Player 2
+const allRoundPlayer2 = {
+    x: 500, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 50, // bredde
+    height: 100, // høyde
+    color: 'red', // fyllfarge
+    speed: 3, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 6,
+    jumpheight: 5,
+    player1: false,
+};
+const gunshotPlayer2 = {
+    x: 300,
+    y: canvas.height / 2,
+    width: 150, // bredde
+    height: 40, // høyde
+    color: "red",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    player1: false,
+
+}
+
+const tankPlayer2 = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 80, // bredde
+    height: 130, // høyde
+    color: 'red', // fyllfarge
+    speed: 2, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 10,
+    jumpheight: 3,
+    player1: false,
+}
+const rockThrowPlayer2 = {
+    x: tank.x,
+    y: tank.y,
+    width: 50, // bredde
+    height: 50, // høyde
+    color: "red",
+    projSpeed: 5,
+    x_velocity: 0,
+    gravity: 6,
+    y_velocity: 0,
+    y_startvelocity: 5,
+    player1: false,
+
+
+}
+const archerPlayer2 = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 40, // bredde
+    height: 80, // høyde
+    color: 'red', // fyllfarge
+    speed: 4, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 4,
+    jumpheight: 6,
+    player1: false,
+}
+const arrowPlayer2 = {
+    x: archer.x,
+    y: archer.y,
+    width: 40,
+    height: 20,
+    color: "red",
+    projSpeed: 7,
+    x_velocity: 0,
+    gravity: 0,
+    y_velocity: 0,
+    y_startvelocity: 0,
+    player1: false,
+
+
+}
+
+
+function drawRectangle(character) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Tømmer canvasen
+    ctx.fillStyle = character.color;
+    ctx.fillRect(character.x, character.y, character.width, character.height); // Tegner firkanten
+}
+function player2DrawRectangle(player2Character){
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Tømmer canvasen
+    ctx.fillStyle = player2Character.color;
+    ctx.fillRect(player2Character.x, player2Character.y, player2Character.width, player2Character.height); // Tegner firkanten
+}
+
+
+//Movement
+let isLookingRight = true
+let player2isLookingRight = false
+let player2AnimationRight;
+
+function movement() {
+
+
+    //Player 1
+    //Right
+
+    let animationRight;
+    let isDpressed = false
+
+    function moveRight(chooseCharacter) {
+        chooseCharacter.x_velocity = chooseCharacter.speed
+        chooseCharacter.x += chooseCharacter.speed
+        drawRectangle(chooseCharacter)
+        animationRight = requestAnimationFrame(() => moveRight(chooseCharacter));
+        if (projectileActive) {
+            drawProjectileRect()
+        }
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'd' || event.key === 'D') {
+            if (!isDpressed) {
+                moveRight(characterChosen)
+                isDpressed = true;
+                isLookingRight = true
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'd' || event.key === 'D') {
+
+            cancelAnimationFrame(animationRight)
+            characterChosen.x_velocity = 0
+            isDpressed = false
+        }
+    });
+
+
+    //Left
+    let animationLeft;
+    let isApressed = false
+    
+
+    function moveLeft(chooseCharacter) {
+        chooseCharacter.x_velocity = chooseCharacter.speed
+        chooseCharacter.x -= chooseCharacter.speed
+        if (chooseCharacter.player1) {
+            animationLeft = requestAnimationFrame(() => moveLeft(chooseCharacter));
+            drawRectangle(chooseCharacter)
+        }
+        else {
+            player2AnimationRight = requestAnimationFrame(() => moveLeft(chooseCharacter));
+            player2DrawRectangle(chooseCharacter)
+        }
+        if (projectileActive) {
+            drawProjectileRect()
+        }
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'a' || event.key === 'A') {
+            if (!isApressed) {
+                moveLeft(characterChosen)
+                isApressed = true;
+                isLookingRight = false
+
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'a' || event.key === 'A') {
+
+            cancelAnimationFrame(animationLeft)
+            isApressed = false
+        }
+    });
+
+    //jump
+
+    let jumpArr = ["jump", "jump"]
+    let isWpressed = false
+    let isJumpStopped = false
+    let isJumpActive = false
+
+
+
+
+
+    let animationJump;
+    let timeooutId;
+
+    function stopJump() {
+        if (!isJumpActive) {
+            cancelAnimationFrame(animationJump)
+            isWpressed = false
+            jumpArr.shift()
+            isJumpStopped = true
+            isJumpActive = true
+        }
+
+
+    }
+
+    function jump() {
+
+        characterChosen.y_velocity = 0
+        characterChosen.y_velocity = characterChosen.jumpheight
+        characterChosen.y -= characterChosen.y_velocity
+        drawRectangle(characterChosen)
+        animationJump = requestAnimationFrame(jump)
+        if (projectileActive) {
+            drawProjectileRect()
+        }
+
+
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (!isJumpStopped && (event.key === 'w' || event.key === 'W')) {
+            if (!isWpressed && jumpArr.length > 0) {
+                jump()
+                isWpressed = true;
+                timeooutId = setTimeout(stopJump, 500)
+                console.log("charcter ser", isLookingRight)
+
+
+            }
+
+        }
+    });
+
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'w' || event.key === 'W') {
+
+            clearTimeout(timeooutId)
+            stopJump()
+            isJumpStopped = false
+            isJumpActive = false
+
+
+        }
+    });
+
+
+
+    //gravity
+
+    function tyngdekraft() {
+        if (characterChosen.y < canvas.height - characterChosen.height && !isWpressed) {
+            characterChosen.y_velocity = characterChosen.gravity
+            characterChosen.y += characterChosen.y_velocity
+        }
+        else if (characterChosen.y >= canvas.height - characterChosen.height) {
+            if (jumpArr.length === 0) {
+                jumpArr.push("jump", "jump")
+            }
+
+            if (jumpArr.length === 1) {
+                jumpArr.push("jump")
+            }
+
+        }
+        else {
+            y_velocity = 0
+
+        }
+    }
+    function gravityCharacter() {
+        tyngdekraft()
+        drawRectangle(characterChosen)
+        requestAnimationFrame(gravityCharacter)
+
+    }
+    gravityCharacter()
+    //Player 2
+
+    
+    let player2IsDpressed = false
+
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'ArrowLEFT') {
+            if (!player2IsDpressed) {
+                moveRight(Player2characterChosen)
+                player2IsDpressed = true;
+                isLookingRight = true
+                console.log("arrow")
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'ArrowLEFT') {
+
+            cancelAnimationFrame(player2AnimationRight)
+            Player2characterChosen.x_velocity = 0
+            player2IsDpressed = false
+        }
+    });
+}
+
+// Projectiles
+let animationProjLeft;
+let animationProjRight;
+let projectileReady = true
+let projectileActive = false
+let projectileDirectionRight = true
+let gravityStarted = false
+let gravityCooldown = false
+let characterChosen = "notpicked"
+let projectileChosen = "notpicked"
+let Player2characterChosen = "notpicked"
+let Player2projectileChosen = "notpicked"
+
+
+
+
+function drawProjectileRect() {
+    ctx.fillStyle = projectileChosen.color;
+    ctx.fillRect(projectileChosen.x, projectileChosen.y, projectileChosen.width, projectileChosen.height);
+    console.log("funksjon")
+}
+function gravityProj() {
+    gravityStarted = true
+    gravityCooldown = true
+}
+function projectileSpeed() {
+    if (projectileDirectionRight) {
+        if (!gravityStarted) {
+            projectileChosen.x += projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.y_startvelocity
+            projectileChosen.y -= projectileChosen.y_velocity
+        }
+        else {
+            projectileChosen.x += projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.gravity
+            projectileChosen.y += projectileChosen.y_velocity
+        }
+        if (!gravityCooldown) {
+            setTimeout(gravityProj, 1000)
+        }
+        drawProjectileRect()
+        animationProjLeft = requestAnimationFrame(projectileSpeed)
+    }
+    else {
+        if (!gravityStarted) {
+            projectileChosen.x -= projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.y_startvelocity
+            projectileChosen.y -= projectileChosen.y_velocity
+        }
+        else {
+            projectileChosen.x -= projectileChosen.projSpeed
+            projectileChosen.y_velocity = projectileChosen.gravity
+            projectileChosen.y += projectileChosen.y_velocity
+        }
+        if (!gravityCooldown) {
+            setTimeout(gravityProj, 1000)
+        }
+        drawProjectileRect()
+        animationProjRight = requestAnimationFrame(projectileSpeed)
+
+    }
+}
+function cancelProjectile() {
+    cancelAnimationFrame(animationProjLeft)
+    cancelAnimationFrame(animationProjRight)
+    gravityStarted = false
+    gravityCooldown = false
+}
+function projectileCooldown() {
+    projectileReady = true
+    projectileActive = false
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === 'r' || event.key === 'R') {
+        console.log("gravity", gravityStarted)
+        if (projectileReady) {
+            if (isLookingRight) {
+                projectileDirectionRight = true
+            }
+            else {
+                projectileDirectionRight = false
+            }
+            projectileActive = true
+            projectileChosen.x = characterChosen.x
+            projectileChosen.y = characterChosen.y + characterChosen.height / 4
+            console.log("r pressed")
+            projectileSpeed()
+            setTimeout(cancelProjectile, 2001)
+            projectileReady = false
+            setTimeout(projectileCooldown, 2000)
+        }
+
+
+
+    }
+});
+
+
+
+
+//timer
+let sekund = 0
+let minutt = 0
+
+function clock() {
+    sekund += 1
+    if (sekund >= 60) {
+        sekund = 0
+        minutt += 1
+    }
+    if (sekund < 10) {
+        document.getElementById("second").innerHTML = "0" + sekund
+    }
+    else {
+        document.getElementById("second").innerHTML = sekund
+    }
+    if (minutt < 10) {
+        document.getElementById("minute").innerHTML = "0" + minutt
+    }
+    else {
+        document.getElementById("minute").innerHTML = minutt
+    }
+}
+setInterval(clock, 1000)
+
+//Character select
+let characterSelected = 0
+
+const characterallRound = document.getElementById("allRound")
+characterallRound.addEventListener("click", changeAllround)
+function changeAllround() {
+    movement()
+    characterSelected = 1
+    characterChosen = allRound
+    projectileChosen = gunshot
+}
+
+const characterTank = document.getElementById("tank")
+characterTank.addEventListener("click", changeTank)
+function changeTank() {
+    movement()
+    console.log(allRound.x)
+    characterSelected = 2
+    characterChosen = tank
+    projectileChosen = rockThrow
+}
+
+const characterArcher = document.getElementById("archer")
+characterArcher.addEventListener("click", changeArcher)
+function changeArcher() {
+    movement()
+    characterSelected = 3
+    characterChosen = archer
+    projectileChosen = arrow
+}
+
+//Player 2
+
+let player2CharacterSelected = 0
+
+const characterallRound2 = document.getElementById("allRound2")
+characterallRound2.addEventListener("click", changeAllround2)
+function changeAllround2() {
+    movement()
+    player2CharacterSelected = 1
+    Player2characterChosen = allRoundPlayer2
+    Player2projectileChosen = gunshotPlayer2
+    console.log("trykk")
+}
+
+
+const characterTank2 = document.getElementById("tank2")
+characterTank2.addEventListener("click", changeTank2)
+function changeTank2() {
+    movement()
+    player2CharacterSelected = 2
+    Player2characterChosen = tankPlayer2
+    Player2projectileChosen = rockThrowPlayer2
+}
+
+const characterArcher2 = document.getElementById("archer2")
+characterArcher2.addEventListener("click", changeArcher2)
+function changeArcher2() {
+    movement()
+    player2CharacterSelected = 3
+    Player2characterChosen = archerPlayer2
+    Player2projectileChosen = arrowPlayer2
+}
+
+
+
+
+
+// console.log(arrow2.height, arrow2.width, arrow2.color, arrow2.projSpeed, arrow2.x_velocity, arrow2.gravity, arrow2.y_velocity, arrow2.y_startvelocity)
+
+let player = 1;
+let playerOneCharacter = 0;
+let playerTwoCharacter = 0;
+let havePlayerSelected = false;
+
+const explanationTekst = document.getElementById("explain");
+
+const eElm = document.querySelectorAll(".e");
+const rElm = document.querySelectorAll(".r");
+const fElm = document.querySelectorAll(".f");
+
+function player2Selection() {
+    if (player === 1) {
+        eElm.forEach(element => {
+            element.innerHTML = "[E]";
+        });
+    } else {
+        eElm.forEach(element => {
+            element.innerHTML = "[-]";
+        });
+    }
+    if (player === 1) {
+        rElm.forEach(element => {
+            element.innerHTML = "[R]";
+        });
+    } else {
+        rElm.forEach(element => {
+            element.innerHTML = "[@]";
+        });
+    }
+    if (player === 1) {
+        fElm.forEach(element => {
+            element.innerHTML = "[F]";
+        });
+    } else {
+        fElm.forEach(element => {
+            element.innerHTML = "[.]";
+        });
+    }
+}
+
+function player2Turn() {
+    explanationTekst.innerHTML = "Player 2´s turn to select. Select by pressing on your desired character´s Icon!";
+}
+
+function goToGame() {
+    explanationTekst.innerHTML = "<button id='play'>Play Game</button>";
+    const playGame = document.getElementById("play");
+    playGame.addEventListener("click", gameStart);
+}
+
+const tarzanSelector = document.getElementById("tarzanSelect");
+const donkeykongSelector = document.getElementById("donkeykongSelect");
+const archerSelector = document.getElementById("archerSelect");
+let tarzanTimeout;
+let donkeykongTimeout;
+let archerTimeout;
+
+tarzanSelector.addEventListener("click", tarzanChoise);
+
+function tarzanChoise() {
+    donkeykongSelector.style.border = "5px solid black";
+    archerSelector.style.border = "5px solid black";
+    if (playerTwoCharacter === 1) {
+        havePlayerSelected = true;
+        setTimeout(goToGame, 2000);
+        explanationTekst.innerHTML = "Player 2 selected Tarzan!";
+        tarzanSelector.removeEventListener("click", tarzanChoise);
+        donkeykongSelector.removeEventListener("click", donkeykongChoise);
+        archerSelector.removeEventListener("click", archerChoise);
+    }
+    if (player === 2 && !havePlayerSelected) {
+        playerTwoCharacter = 1;
+        tarzanSelector.style.border = "5px solid red";
+        explanationTekst.innerHTML = "Player 2´s turn to select. Tarzan is Selected! Press Again to confirm your selection!";
+        clearTimeout(tarzanTimeout);
+        clearTimeout(donkeykongTimeout);
+        clearTimeout(archerTimeout);
+    }
+    if (playerOneCharacter === 1 && player === 1) {
+        player = 2;
+        playerTwoCharacter = 0;
+        tarzanSelector.style.border = "5px solid black";
+        explanationTekst.innerHTML = "Player 1 selected Tarzan!";
+        tarzanTimeout = setTimeout(player2Turn, 1000);
+        player2Selection();
+    }
+    if (player === 1) {
+        tarzanSelector.style.border = "5px solid blue";
+        explanationTekst.innerHTML = "Player 1´s turn to select. Tarzan is Selected! Press Again to confirm your selection!";
+        playerOneCharacter = 1;
+    }
+    if (player === 2 && playerTwoCharacter === 0) {
+        tarzanSelector.style.border = "5px solid black";
+    }
+    console.log(havePlayerSelected);
+}
+
+donkeykongSelector.addEventListener("click", donkeykongChoise);
+
+function donkeykongChoise() {
+    tarzanSelector.style.border = "5px solid black";
+    archerSelector.style.border = "5px solid black";
+    if (playerTwoCharacter === 2) {
+        havePlayerSelected = true;
+        explanationTekst.innerHTML = "Player 2 selected Donkeykong!";
+        donkeykongTimeout = setTimeout(goToGame, 2000);
+        tarzanSelector.removeEventListener("click", tarzanChoise);
+        donkeykongSelector.removeEventListener("click", donkeykongChoise);
+        archerSelector.removeEventListener("click", archerChoise);
+        donkeykongSelector.style.border = "5px solid black";
+    }
+    if (player === 2 && !havePlayerSelected) {
+        playerTwoCharacter = 2;
+        donkeykongSelector.style.border = "5px solid red";
+        explanationTekst.innerHTML = "Player 2´s turn to select. Donkeykong is Selected! Press Again to confirm your selection!";
+        clearTimeout(tarzanTimeout);
+        clearTimeout(donkeykongTimeout);
+        clearTimeout(archerTimeout);
+    }
+    if (playerOneCharacter === 2 && player === 1) {
+        player = 2;
+        playerTwoCharacter = 0;
+        donkeykongSelector.style.border = "5px solid black";
+        explanationTekst.innerHTML = "Player 1 selected Donkeykong!";
+        donkeykongTimeout = setTimeout(player2Turn, 1000);
+        player2Selection();
+    }
+    if (player === 1) {
+        donkeykongSelector.style.border = "5px solid blue";
+        explanationTekst.innerHTML = "Player 1´s turn to select. Donkeykong is Selected! Press Again to confirm your selection!";
+        playerOneCharacter = 2;
+    }
+    if (player === 2 && playerTwoCharacter === 0) {
+        donkeykongSelector.style.border = "5px solid black";
+    }
+    console.log(havePlayerSelected);
+}
+
+archerSelector.addEventListener("click", archerChoise);
+
+function archerChoise() {
+    tarzanSelector.style.border = "5px solid black";
+    donkeykongSelector.style.border = "5px solid black";
+    if (playerTwoCharacter === 3) {
+        havePlayerSelected = true;
+        explanationTekst.innerHTML = "Player 2 selected Archer!";
+        archerTimeout = setTimeout(goToGame, 2000);
+        tarzanSelector.removeEventListener("click", tarzanChoise);
+        donkeykongSelector.removeEventListener("click", donkeykongChoise);
+        archerSelector.removeEventListener("click", archerChoise);
+        archerSelector.style.border = "5px solid black";
+    }
+    if (player === 2 && !havePlayerSelected) {
+        playerTwoCharacter = 3;
+        archerSelector.style.border = "5px solid red";
+        explanationTekst.innerHTML = "Player 2´s turn to select. Archer is Selected! Press Again to confirm your selection!";
+        clearTimeout(tarzanTimeout);
+        clearTimeout(donkeykongTimeout);
+        clearTimeout(archerTimeout);
+    }
+    if (playerOneCharacter === 3 && player === 1) {
+        player = 2;
+        playerTwoCharacter = 0;
+        archerSelector.style.border = "5px solid black";
+        explanationTekst.innerHTML = "Player 1 selected Archer!";
+        archerTimeout = setTimeout(player2Turn, 1000);
+        player2Selection();
+    }
+    if (player === 1) {
+        archerSelector.style.border = "5px solid blue";
+        explanationTekst.innerHTML = "Player 1´s turn to select. Archer is Selected! Press Again to confirm your selection!";
+        playerOneCharacter = 3;
+    }
+    if (player === 2 && playerTwoCharacter === 0) {
+        archerSelector.style.border = "5px solid black";
+    }
+    console.log(havePlayerSelected);
+}
+
+function checkForSelected() {
+    console.log("player 1", playerOneCharacter);
+    console.log("player 2", playerTwoCharacter);
+}
+setInterval(checkForSelected, 2000);
+
+function gameStart() {
+    sessionStorage.setItem('player1Character', playerOneCharacter)
+    sessionStorage.setItem('player2Character', playerTwoCharacter)
+    window.location.href = '../FightClubMain/fightclub.html';
+    console.log("funk");
+}
+
+
+let projectileChosen = "notpicked"
+let player2ProjectileChosen = "notpicked"
+let meleeChosen = "notpicked"
+let player2MeleeChosen = "notpicked"
+
+
+let characterImport = sessionStorage.getItem('player1Character')
+if(characterImport == 1){
+    characterImport = allRound
+    projectileChosen = gunshot
+    meleeChosen = whip
+}
+else if(characterImport == 2){
+    characterImport = tank
+    projectileChosen = rockThrow
+    meleeChosen = punch
+}
+else{
+    characterImport = archer
+    projectileChosen = arrow
+    meleeChosen = bowPunch
+}
+let player2CharacterImport = sessionStorage.getItem('player2Character')
+if(player2CharacterImport == 1){
+    player2CharacterImport = allRoundPlayer2
+    player2ProjectileChosen = gunshotPlayer2
+    player2MeleeChosen = whipPlayer2
+}
+else if(player2CharacterImport == 2){
+    player2CharacterImport = tankPlayer2
+    player2ProjectileChosen = rockThrowPlayer2
+    player2MeleeChosen = punchPlayer2
+}
+else{
+    player2CharacterImport = archerPlayer2
+    player2ProjectileChosen = arrowPlayer2
+    player2MeleeChosen = bowPunchPlayer2
+}
+let characterChosen = characterImport
+let player2CharacterChosen = player2CharacterImport
+
+*/
+
+
+    </script>
+</body>
+
+</html>

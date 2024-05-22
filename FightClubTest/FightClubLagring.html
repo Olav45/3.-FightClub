@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FightClub</title>
+    <style>
+        .flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mainContainer {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            margin: 5px 0;
+            width: 1000px;
+            height: 500px;
+            border: 2px solid grey;
+            background-color: goldenrod;
+        }
+
+        button {
+            width: 100px;
+            height: 50px;
+        }
+
+        /* Topscreen Info */
+        #topStats {
+            width: 1000px;
+            height: 100px;
+            background-color: wheat;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: 1fr;
+            gap: 0px;
+        }
+
+        #timer {
+            border: 2px solid gray;
+            background-color: antiquewhite;
+            font-size: 30px;
+        }
+
+        /*Player info*/
+        .life {
+            height: 10px;
+            width: 10px;
+            border-radius: 100%;
+            border: 2px solid black;
+            margin: 0 10px;
+            background-color: white;
+
+        }
+
+        /*Player 1*/
+        #player1 {
+            border: 2px solid gray;
+            display: grid;
+            grid-template-rows: 3fr 1fr;
+            grid-template-columns: 1fr;
+            background-color: rgb(0, 64, 255);
+            color: white;
+        }
+
+        #player1Health {
+            grid-row: 1/2;
+            grid-column: 1/2;
+            font-size: 40px;
+        }
+
+        #player1Lives {
+            grid-row: 2/3;
+            grid-column: 1/2;
+        }
+
+        /*Player 2*/
+        #player2 {
+            border: 2px solid gray;
+            display: grid;
+            grid-template-rows: 3fr 1fr;
+            grid-template-columns: 1fr;
+            background-color: red;
+            color: white;
+        }
+
+        #player2Health {
+            grid-row: 1/2;
+            grid-column: 1/2;
+            font-size: 40px;
+        }
+
+        #player2Lives {
+            grid-row: 2/3;
+            grid-column: 1/2;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="mainContainer">
+        <div id="topStats">
+            <div id="player1">
+                <div id="player1Health" class="flex">67%</div>
+                <div id="player1Lives" class="flex">
+                    <div id="player1Life3" class="life"></div>
+                    <div id="player1Life2" class="life"></div>
+                    <div id="player1Life1" class="life"></div>
+                </div>
+            </div>
+            <div id="timer" class="flex">
+                <p id="tid">
+                    <span id="minute">00</span>
+                    :
+                    <span id="second">00</span>
+                </p>
+            </div>
+            <div id="player2">
+                <div id="player2Health" class="flex">43%</div>
+                <div id="player2Lives" class="flex">
+                    <div id="player2Life3" class="life"></div>
+                    <div id="player2Life2" class="life"></div>
+                    <div id="player2Life1" class="life"></div>
+                </div>
+            </div>
+        </div>
+        <canvas></canvas>
+        <button id="allRound">AllRound</button>
+        <button id="tank">Tank</button>
+        <button id="archer">Archer</button>
+
+    </div>
+    <script>
+ const canvas = document.querySelector("canvas")
+const ctx = canvas.getContext("2d")
+canvas.width = 1000
+canvas.height = 500
+
+
+//Characters
+
+const allRound = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 50, // bredde
+    height: 100, // høyde
+    color: 'blue', // fyllfarge
+    speed: 3, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 6,
+    jumpheight: 5,
+};
+const gunshot = {
+    x: allRound.x,
+    y: allRound.y,
+    bulletSpeed: 5,
+    x_velocity: 0,
+
+}
+const tank = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 80, // bredde
+    height: 130, // høyde
+    color: 'saddlebrown', // fyllfarge
+    speed: 2, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 10,
+    jumpheight: 3,
+}
+const rockThrow = {
+    x: tank.x,
+    y: tank.y,
+    rockSpeed: 5,
+    x_velocity: 0,
+    gravity: 5,
+    y_velocity: 0,
+    y_startvelocity: 5,
+   
+    
+}
+const archer = {
+    x: 50, // x-posisjon
+    y: canvas.height / 2, // y-posisjon
+    width: 40, // bredde
+    height: 80, // høyde
+    color: 'green', // fyllfarge
+    speed: 4, // hastighet
+    x_velocity: 0,
+    y_velocity: 0,
+    gravity: 4,
+    jumpheight: 6,
+}
+const arrow = {
+    x: archer.x,
+    y: archer.y,
+    width: 40,
+    height: 20,
+    arrowSpeed: 7,
+    x_velocity: 0,
+    color: "black",
+
+}
+
+
+function drawRectangle(character) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Tømmer canvasen
+    ctx.fillStyle = character.color;
+    ctx.fillRect(character.x, character.y, character.width, character.height); // Tegner firkanten
+}
+
+
+//Movement
+
+function movement(chooseCharacter) {
+
+    let isLookingRight = true
+
+    //Right
+
+    let animationRight;
+    let isDpressed = false
+
+    function moveRight() {
+        chooseCharacter.x_velocity = chooseCharacter.speed
+        chooseCharacter.x += chooseCharacter.speed
+        drawRectangle(chooseCharacter)
+        animationRight = requestAnimationFrame(moveRight)
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'd' || event.key === 'D') {
+            if (!isDpressed) {
+                moveRight()
+                console.log("D pressed")
+                console.log(chooseCharacter.x_velocity)
+                isDpressed = true;
+                isLookingRight = true
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'd' || event.key === 'D') {
+
+            cancelAnimationFrame(animationRight)
+            chooseCharacter.x_velocity = 0
+            console.log("D unpressed")
+            isDpressed = false
+            console.log(jumpArr)
+        }
+    });
+
+
+    //Left
+    let animationLeft;
+    let isApressed = false
+
+    function moveLeft() {
+        chooseCharacter.x_velocity = chooseCharacter.speed
+        chooseCharacter.x -= chooseCharacter.speed
+        drawRectangle(chooseCharacter)
+        animationLeft = requestAnimationFrame(moveLeft)
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === 'a' || event.key === 'A') {
+            if (!isApressed) {
+                moveLeft()
+                isApressed = true;
+                isLookingRight = false
+            }
+        }
+    });
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'a' || event.key === 'A') {
+
+            cancelAnimationFrame(animationLeft)
+            console.log("A unpressed")
+            isApressed = false
+        }
+    });
+
+    //jump
+
+    let jumpArr = ["jump", "jump"]
+    let isWpressed = false
+    let isJumpStopped = false
+    let isJumpActive = false
+    
+   
+
+
+
+    let animationJump;
+    let timeooutId;
+
+    function stopJump() {
+        if(!isJumpActive){
+        console.log("jump ble stoppet")
+        cancelAnimationFrame(animationJump)
+        isWpressed = false
+        jumpArr.shift()
+        isJumpStopped = true
+        isJumpActive = true
+        }
+
+            
+    }
+    
+        function jump() {
+           
+            chooseCharacter.y_velocity = 0
+            chooseCharacter.y_velocity = chooseCharacter.jumpheight
+            chooseCharacter.y -= chooseCharacter.y_velocity
+            drawRectangle(chooseCharacter)
+            animationJump = requestAnimationFrame(jump)
+            
+    
+        }
+    
+    document.addEventListener("keydown", function (event) {
+        if (!isJumpStopped && (event.key === 'w' || event.key === 'W')) {
+            if (!isWpressed && jumpArr.length > 0) {
+                jump()
+                isWpressed = true;
+                timeooutId = setTimeout(stopJump, 500)
+                console.log("isLookingRight er", isLookingRight)
+                
+            }
+           
+        }
+    });
+    
+    document.addEventListener("keyup", function (event) {
+        if (event.key === 'w' || event.key === 'W') {
+
+            clearTimeout(timeooutId)
+            stopJump()
+            isJumpStopped = false
+            isJumpActive = false
+            
+
+        }
+    });
+
+
+
+    //gravity
+
+    function tyngdekraft() {
+        if (chooseCharacter.y < canvas.height - chooseCharacter.height && !isWpressed) {
+            chooseCharacter.y_velocity = chooseCharacter.gravity
+            chooseCharacter.y += chooseCharacter.y_velocity
+        }
+        else if (chooseCharacter.y >= canvas.height - chooseCharacter.height) {
+            if (jumpArr.length === 0) {
+                jumpArr.push("jump", "jump")
+            }
+
+            if (jumpArr.length === 1) {
+                jumpArr.push("jump")
+            }
+
+        }
+        else {
+            y_velocity = 0
+
+        }
+    }
+    function gravityCharacter() {
+        tyngdekraft()
+        drawRectangle(chooseCharacter)
+        requestAnimationFrame(gravityCharacter)
+
+    }
+    gravityCharacter()
+}
+// Projectiles
+function drawProjectileRect(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(arrow.x, arrow.y, arrow.width, arrow.height);
+    ctx.fillStyle = arrow.color;
+    console.log("funksjon")
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === 'r' || event.key === 'R') {
+        console.log("r pressed")
+        drawProjectileRect()
+        
+    }
+});
+
+
+
+
+//timer
+let sekund = 0
+let minutt = 0
+
+function clock() {
+    sekund += 1
+    if (sekund >= 60) {
+        sekund = 0
+        minutt += 1
+    }
+    if (sekund < 10) {
+        document.getElementById("second").innerHTML = "0" + sekund
+    }
+    else {
+        document.getElementById("second").innerHTML = sekund
+    }
+    if (minutt < 10) {
+        document.getElementById("minute").innerHTML = "0" + minutt
+    }
+    else {
+        document.getElementById("minute").innerHTML = minutt
+    }
+}
+setInterval(clock, 1000)
+
+//Character select
+let characterSelected = 0
+
+const characterArcher = document.getElementById("archer")
+characterArcher.addEventListener("click", changeArcher)
+function changeArcher() {
+    movement(archer)
+    characterSelected = 3
+}
+
+const characterTank = document.getElementById("tank")
+characterTank.addEventListener("click", changeTank)
+function changeTank() {
+    movement(tank)
+    console.log(allRound.x)
+    characterSelected = 2
+}
+
+const characterallRound = document.getElementById("allRound")
+characterallRound.addEventListener("click", changeAllround)
+function changeAllround() {
+    movement(allRound)
+    characterSelected = 1
+}
+
+
+    </script>
+</body>
+
+</html>

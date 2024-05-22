@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FightClub</title>
+    <link rel="stylesheet" href="FightClub.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="mainContainer">
+        <header class="flex">FightClub</header>
+        <div id="topStats">
+            <div id="player1">
+                <div id="player1Health" class="flex">100%</div>
+                <div id="player1Lives" class="flex">
+                    <div id="player1Life3" class="life"></div>
+                    <div id="player1Life2" class="life"></div>
+                    <div id="player1Life1" class="life"></div>
+                </div>
+            </div>
+            <div id="timer" class="flex">
+                <p id="tid">
+                    <span id="minute">00</span>
+                    :
+                    <span id="second">00</span>
+                </p>
+            </div>
+            <div id="player2">
+                <div id="player2Health" class="flex">100%</div>
+                <div id="player2Lives" class="flex">
+                    <div id="player2Life3" class="life"></div>
+                    <div id="player2Life2" class="life"></div>
+                    <div id="player2Life1" class="life"></div>
+                </div>
+            </div>
+        </div>
+        <canvas></canvas>
+        <div id="attacks" class="flex row">
+            <div id="player1Melee" class="attackReady flex">Melee[E]</div>
+            <div id="player1Projectile" class="attackReady flex">Projectile[R]</div>
+            <div id="player1Ultimate" class="attackReady flex">Ultimate[F]</div>
+            <div id="divider"></div>
+            <div id="player2Melee" class="attackReady flex">Melee[@]</div>
+            <div id="player2Projectile" class="attackReady flex">Projectile[-]</div>
+            <div id="player2Ultimate" class="attackReady flex">Ultimate[.]</div>
+        </div>
+
+    </div>
+    <script src="FightClub.js"></script>
+</body>
+
+</html>

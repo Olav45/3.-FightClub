@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How To Play</title>
+    <link rel="stylesheet" href="HowToPlay.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="flex column">
+        <header class="flex">
+            <h1>How To Play?</h1>
+        </header>
+        <main class="flexCenterX">
+            <div id="shortcuts">
+                <div id="quickNavigate" class="flex">
+                    <h2>Shortcuts</h2>
+                </div>
+                <div id="movementShortcut">
+                    <div class="row1 flex">
+                        <h3>Movement</h3>
+                    </div>
+                    <div class="row2 flex">
+                        <button class="shortcutButtons" id="leftRight">Left/Right</button>
+                    </div>
+                    <div class="row3 flex">
+                        <button class="shortcutButtons" id="jump">Jumps</button>
+                    </div>
+                </div>
+                <div id="attackShortcut">
+                    <div class="row1 flex">
+                        <h3>Attacks</h3>
+                    </div>
+                    <div class="row2 flex">
+                        <button class="shortcutButtons" id="melee">Melee</button>
+                    </div>
+                    <div class="row3 flex">
+                        <button class="shortcutButtons" id="projectile">Projectile</button>
+                    </div>
+                    <div class="row4 flex">
+                        <button class="shortcutButtons" id="ultimate">Ultimate</button>
+                    </div>
+                </div>
+                <div id="interfaceShortcut">
+                    <div class="row1 flex">
+                        <h3>Interface</h3>
+                    </div>
+                    <div class="row2 flex">
+                        <button class="shortcutButtons" id="health">Health</button>
+                    </div>
+                    <div class="row3 flex">
+                        <button class="shortcutButtons" id="lives">Lives</button>
+                    </div>
+                </div>
+                <div id="goToGameShortcut">
+                    <div class="row1 flex">
+                        <h3>Go To Game</h3>
+                    </div>
+                    <div class="row2 flex">
+                        <button class="shortcutButtons" id="goGame">Go To Game</button>
+                    </div>
+                </div>
+            </div>
+            <div id="mainContainer">
+                <div class="row1 column1 flex column flexStart">
+                    <h4>Movement</h4>
+                    <h5 id="leftRightTarget">Left/Right</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Player 1 moves left and right by pressing the <b>[A]</b> and <b>[D]</b> keys where <b>[A]</b> moves you left and <b>[D]</b> moves you right. Player 2 moves using the <b>[ArrowRight]</b> and <b>[ArrowLeft]</b> keys on the keyboard. Note that different characters have different movement speeds meaning some characters will move faster than others.
+                        </p>
+                    </div>
+                    <h5 id="jumpTarget">Jump</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Player 1 jumps by pressing the <b>[W]</b> key while Player 2 jumps by pressing the <b>[ArrowUp]</b> key. You can control the height of your jump by how long you press down the jump key. All characters have a max jumpheight where you will start falling back down. All characters have a double jump meaning that if your jump has stopped you can jump again without having landed on the ground first. If you have jumped twice you will have to land on the ground before jumping again. Note that all characters have different jumpheights and gravity meaning some characters can stay i the air for a lot longer than others.
+                        </p>
+                    </div>
+                </div>
+                <div class="row1 column2 pad flex column flexStart">
+                    <img class="explainImage" id="leftRightImage" src="bilder/movementPicture.jpg">
+                    <img class="explainImage" id="jumpImage" src="bilder/jumpPicture.jpg">
+                </div>
+                <div class="row2 column1 flex column flexStart">
+                    <h4>Attacks</h4>
+                    <h5 id="meleeTarget">Melee</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Player 1 performs a Melee attack by pressing <b>[E]</b> and Player 2 does the same by pressing <b>[@]</b>. Melee attacks are short ranged attacks that deal more damage than projectiles but are more difficult to hit. Note that different players will have different melee attacks that will deal different damage.
+                        </p>
+                    </div>
+                    <h5 id="projectileTarget">Projectile</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Player 1 performs a projectile attack by pressing <b>[R]</b> and Player 2 does the same by pressing <b>[-]</b>. Projectile attacks are long ranged attacks that deal damage on impact. They are easier to hit than melee attacks but deal less damage. Note that different players have different projectile attacks that deal differentiating damage and move at different speeds. Some projectile attacks have gravity applied.
+                        </p>
+                    </div>
+                    <h5 id="ultimateTarget">Ultimate</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Player 1 performs a ultimate attack by pressing <b>[F]</b> and Player 2 does the same by pressing <b>[.]</b>. Ultimate attacks need to be charged up before use. Ultimate attacks get charged up by succesfully landing either melee or projectile attacks on your opponent. Once charged up you will be able to perform an ultimate attack. Note that different players have different ultimate attacks that deal different damage and that behave differently. Some characters ultimate attacks are melee whilst others are projectile attacks.
+                        </p>
+                    </div>
+                </div>
+                <div class="row2 column2 pad flex column flexStart">
+                    <img class="explainImage" id="meleeImage" src="bilder/melee.jpg">
+                    <img class="explainImage" id="projectileImage" src="bilder/projectile.jpg">
+                    <img class="explainImage" id="ultimateImage" src="bilder/ultimate.jpg">
+                </div>
+                <div class="row3 column1 flex column flexStart">
+                    <h4>Interface</h4>
+                    <h5 id="healthTarget">Health</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Player health is displayed as a persentage of the maximum health for the chosen character. This health is displayed in the top left corner for Player 1 and top right corner for Player 2. Player 1 is blue whilst Player 2 is red.
+                        </p>
+                    </div>
+                    <h5 id="livesTarget">Lives</h5>
+                    <div class="explainTekst">
+                        <p>
+                            Lives are displayed by the white circles underneath player health. Once a player health reaches 0 their health will be reset to their max health, but they will lose a life. Once a life is lost one of the white circles will turn black indicating that a life has been lost.
+                        </p>
+                    </div>
+                </div>
+                <div class="row3 column2 pad flex column flexStart">
+                    <img class="explainImage" id="healthImage" src="bilder/health.jpg">
+                    <img class="explainImage" id="livesImage" src="bilder/lives.jpg">
+                </div>
+                <div class="row4 column1 flex column flexStart">
+                    <h4 id="goGameTarget">Go to game?</h4>
+                    <button id="play">Play!</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="HowToPlay.js"></script>
+</body>
+
+</html>

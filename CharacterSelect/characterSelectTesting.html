@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: salmon;
+}
+main{
+    width: 1200px;
+    height: 700px;
+    border: 2px solid black;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 3fr 3fr 2fr 4fr;
+    gap: 0px;
+}
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Grid placements*/
+.tarzan{
+    grid-row: 1/2;
+}
+.donkeykong{
+    grid-row: 2/3;
+}
+.archer{
+    grid-row: 3/4;
+}
+.characterPicture{
+    grid-column: 1/2;
+}
+.characterDescription{
+    grid-column: 2/3;
+    border: 2px solid saddlebrown;
+    padding: 10px;
+}
+.characterAttacks{
+    grid-column: 3/4;
+    border: 2px solid salmon;
+}
+.characterStats{
+    grid-column: 4/5;
+    border: 2px solid aquamarine;
+    padding: 10px;
+    position: relative;
+}
+
+
+
+.characterPicture img {
+    max-width: 100%; 
+    height: auto;
+    border: 2px solid black;
+}
+
+/* Stats */
+
+.characterStatBar{
+    width: 200px;
+    height: 50px;
+    border: 2px solid black;
+    margin: 10px;
+    position: relative;
+}
+/* Health */
+.health{
+    position: absolute;
+    right: 5%;
+    top: 5%;
+    font-size: 30px;
+    flex-direction: row;
+}
+/* Attack */
+.attack{
+    position: absolute;
+    right: 5%;
+    top: 35%;
+    font-size: 30px;
+    flex-direction: row;
+}
+/* Movement */
+.movement{
+    position: absolute;
+    right: 5%;
+    top: 65%;
+    font-size: 30px;
+    flex-direction: row;
+}
+/* Tarzan stats*/
+#tarzanHealthStat{
+    position: absolute;
+    width: 80%;
+    height: 46px;
+    left: 0;
+    top: 0;
+    background-color: red;
+}
+#tarzanAttackStat{
+    position: absolute;
+    width: 80%;
+    height: 46px;
+    left: 0;
+    top: 0;
+    background-color: blue;
+}
+#tarzanMovementStat{
+    position: absolute;
+    width: 80%;
+    height: 46px;
+    left: 0;
+    top: 0;
+    background-color: green;
+}
+    </style>
+</head>
+
+<body>
+    <div class="flex">
+        <main>
+            <div class="tarzan characterPicture flex"><img src="bilder/tarzanFace.png"></div>
+            <div class="tarzan characterDescription flex">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facere iste fugit vel commodi inventore
+                    nobis minima, tempore dolorum voluptatum est architecto magnam quos enim, cum necessitatibus. Velit
+                    voluptatibus veritatis dolore!</p>
+            </div>
+            <div class="tarzan characterAttacks flex">
+                <p>Attack 1</p>
+                <p>Attack 2</p>
+                <p>Attack 3</p>
+            </div>
+            <div class="tarzan characterStats flex">
+                <div class="statsContainer">
+                    <div class="health flex">
+                        <div>Health:</div>
+                        <div class="characterStatBar">
+                            <div id="tarzanHealthStat"></div>
+                        </div>
+                    </div>
+                    <div class="attack flex">
+                        <div>Attack:</div>
+                        <div class="characterStatBar">
+                            <div id="tarzanAttackStat"></div>
+                        </div>
+                    </div>
+                    <div class="movement flex">
+                        <div>Movement:</div>
+                        <div class="characterStatBar">
+                            <div id="tarzanMovementStat"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="donkeykong characterPicture flex"><img src="bilder/donkekongFace.png"></div>
+            <div class="donkeykong characterDescription flex">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facere iste fugit vel commodi inventore
+                    nobis minima, tempore dolorum voluptatum est architecto magnam quos enim, cum necessitatibus. Velit
+                    voluptatibus veritatis dolore!</p>
+            </div>
+            <div class="donkeykong characterAttacks flex">
+                <p>Attack 1</p>
+                <p>Attack 2</p>
+                <p>Attack 3</p>
+            </div>
+            <div class="donkeykong characterStats flex">
+                <div>Inni her er stats</div>
+            </div>
+
+            <div class="archer characterPicture flex"><img src="bilder/archerFace.png"></div>
+            <div class="archer characterDescription flex">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facere iste fugit vel commodi inventore
+                    nobis minima, tempore dolorum voluptatum est architecto magnam quos enim, cum necessitatibus. Velit
+                    voluptatibus veritatis dolore!</p>
+            </div>
+            <div class="archer characterAttacks flex">
+                <p>Attack 1</p>
+                <p>Attack 2</p>
+                <p>Attack 3</p>
+            </div>
+            <div class="archer characterStats flex">
+                <div>Inni her er stats</div>
+            </div>
+
+        </main>
+    </div>
+
+
+    <script src="characterSelect.js"></script>
+</body>
+
+</html>
