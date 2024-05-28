@@ -190,7 +190,7 @@ setInterval(checkForSelected, 2000);
 function gameStart() {
     sessionStorage.setItem('player1Character', playerOneCharacter)
     sessionStorage.setItem('player2Character', playerTwoCharacter)
-    window.location.href = '../FightClubMain/Fightclub.html';
+    window.location.href = '../FightClubMain/FightClub.html';
     console.log("funk");
 }
 
