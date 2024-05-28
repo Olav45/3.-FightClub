@@ -12,6 +12,6 @@ function borderOut(){
 playGame.addEventListener("click", goToCharacterSelect)
 function goToCharacterSelect(){
     console.log("funk")
-    window.location.href = '../CharacterSelect/characterSelect.html';
+    window.location.href = 'CharacterSelect/characterSelect.html';
     
 }
