@@ -16,7 +16,7 @@
 }
 body{
     background-color: var(--myBrown);
-    background-image: url('bilder/fightBackground.jpg');
+    background-image: url('Indexbilder/fightBackground.jpg');
     background-size: cover;
     width: 100%;
     height: 100vh;
@@ -29,7 +29,7 @@ body{
 main{
     width: 1200px;
     height: 100vh;
-    background-image: url('bilder/fightBackground.jpg');
+    background-image: url('Indexbilder/fightBackground.jpg');
     background-size: cover;
     position: relative;
 }
